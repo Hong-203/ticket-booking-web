@@ -1,4 +1,4 @@
-import * as nodeCrypto from 'crypto';
+import './polyfill'; 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { API_PREFIX } from './constants';
@@ -7,14 +7,6 @@ import helmet from 'helmet';
 import { setupSwagger } from './config/setup-swagger';
 import { AllExceptionsFilter } from './filters/exception.filter';
 import { Logger, ValidationPipe } from '@nestjs/common';
-
-// Polyfill crypto cho TypeORM
-if (!globalThis.crypto) {
-  (globalThis as any).crypto = {
-    randomUUID: nodeCrypto.randomUUID,
-    getRandomValues: (buffer: Buffer) => nodeCrypto.randomBytes(buffer.length),
-  };
-}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

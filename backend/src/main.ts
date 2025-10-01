@@ -1,3 +1,4 @@
+import * as nodeCrypto from 'crypto';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { API_PREFIX } from './constants';
@@ -6,6 +7,14 @@ import helmet from 'helmet';
 import { setupSwagger } from './config/setup-swagger';
 import { AllExceptionsFilter } from './filters/exception.filter';
 import { Logger, ValidationPipe } from '@nestjs/common';
+
+// Polyfill crypto cho TypeORM
+if (!globalThis.crypto) {
+  (globalThis as any).crypto = {
+    randomUUID: nodeCrypto.randomUUID,
+    getRandomValues: (buffer: Buffer) => nodeCrypto.randomBytes(buffer.length),
+  };
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,7 +42,8 @@ async function bootstrap() {
 
   setupSwagger(app);
 
-  const port = process.env.APP_PORT ?? 3001;
+  // Render cung cấp PORT qua env
+  const port = process.env.PORT || process.env.APP_PORT || 3000;
   await app.listen(port);
 
   const logger = new Logger('Bootstrap');
@@ -44,10 +54,10 @@ async function bootstrap() {
 
   logger.log(`${appName} is running in ${nodeEnv} mode`);
   logger.log(
-    `🚀 App listening on: ${serverMethod}://${serverHost}/${API_PREFIX}`,
+    `🚀 App listening on: ${serverMethod}://${serverHost}:${port}/${API_PREFIX}`,
   );
   logger.log(
-    `📚 Swagger available at: ${serverMethod}://${serverHost}/${API_PREFIX}/documentation`,
+    `📚 Swagger available at: ${serverMethod}://${serverHost}:${port}/${API_PREFIX}/documentation`,
   );
 }
 bootstrap();

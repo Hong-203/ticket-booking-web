@@ -1,0 +1,202 @@
+.movie-showtime-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  /* background: #f5f5f5; */
+  min-height: 100vh;
+  padding: 63px 0;
+}
+.empty-state {
+  padding: 63px 0 !important;
+}
+.movie-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  color: white;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.movie-info {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.movie-poster {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.movie-details h1 {
+  color: white !important;
+  margin-bottom: 16px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.movie-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.rating-badge {
+  background: #ffd700;
+  color: #000;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.showtime-section {
+  margin-bottom: 32px;
+}
+
+.date-header {
+  background: linear-gradient(90deg, #4caf50, #45a049);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.date-header h2 {
+  color: white !important;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theatre-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s ease;
+}
+
+.theatre-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.theatre-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.theatre-name {
+  color: #1890ff !important;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.theatre-location {
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.showtime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.showtime-button {
+  height: auto !important;
+  padding: 16px !important;
+  border-radius: 12px !important;
+  border: 2px solid #e8e8e8 !important;
+  background: white !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.showtime-button:hover {
+  border-color: #1890ff !important;
+  background: #f0f8ff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3) !important;
+}
+
+.showtime-time {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.showtime-type {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.showtime-price {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #52c41a;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .movie-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .movie-details h1 {
+    font-size: 2rem;
+  }
+
+  .showtime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .theatre-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

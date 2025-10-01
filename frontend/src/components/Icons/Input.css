@@ -1,0 +1,27 @@
+.text-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding-top: 8px;
+  text-align: left;
+}
+
+.input-label {
+  font-weight: bold;
+  color: white;
+  padding-bottom: 4px;
+  padding-left: 4px;
+}
+
+.text-input {
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #111827; /* gray-900 */
+  color: white;
+  border: none;
+}
+
+.text-input::placeholder {
+  color: #d1d5db; /* placeholder-gray-300 */
+}

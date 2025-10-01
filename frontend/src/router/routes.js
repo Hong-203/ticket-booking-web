@@ -1,0 +1,83 @@
+import TicketDetail from '../components/TicketDetail/TicketDetail'
+import AdminPageHome from '../pages/AdminPage/AdminPageHome/AdminPageHome'
+import AdminShowin from '../pages/AdminPage/AdminShownIn/AdminShowin'
+import AllMoviePage from '../pages/AllMoviePage/AllMoviePage'
+import ComingSoonPage from '../pages/AllMoviePage/ComingSoonPage'
+import BookingPage from '../pages/BookingPage/BookingPage'
+import HomePage from '../pages/Home/HomePage'
+import Login from '../pages/Login/Login'
+import MovieDetail from '../pages/MovieDetail/MovieDetail'
+import MovieShowtime from '../pages/MovieShowTime/MovieShowTime'
+import NotPoundPage from '../pages/NotPoundPage/NotPoundPage'
+import PaymentPage from '../pages/PaymentPage/PaymentPage'
+import PaymentSuccess from '../pages/PaymentSuccess/PaymentSuccess'
+import ProfilePage from '../pages/Profile/Profile'
+import Register from '../pages/Register/Register'
+
+export const routes = [
+  {
+    path: '/',
+    page: HomePage,
+    isShowHeader: true
+  },
+  {
+    path: '/phim-dang-cong-chieu',
+    page: AllMoviePage,
+    isShowHeader: true
+  },
+  {
+    path: '/phim-sap-chieu',
+    page: ComingSoonPage,
+    isShowHeader: true
+  },
+  {
+    path: `/movie-detail/:slug`,
+    page: MovieDetail,
+    isShowHeader: true
+  },
+  {
+    path: `/movie-show-time/:slug`,
+    page: MovieShowtime,
+    isShowHeader: true
+  },
+  {
+    path: `/:slug/seat/:movieId/:hallId/:showtimeId`,
+    page: BookingPage,
+    isShowHeader: true
+  },
+  {
+    path: `/payment/:ticketId`,
+    page: PaymentPage,
+    isShowHeader: true
+  },
+  {
+    path: '/payment-success',
+    page: PaymentSuccess,
+    isShowHeader: true
+  },
+  {
+    path: '/login',
+    page: Login
+  },
+  {
+    path: '/admin',
+    page: AdminPageHome
+  },
+  {
+    path: '/admin/shownin',
+    page: AdminShowin
+  },
+  {
+    path: '/signup',
+    page: Register
+  },
+  {
+    path: '/profile',
+    page: ProfilePage
+  },
+  {
+    path: '*',
+    page: NotPoundPage
+  }
+]
+//PaymentSuccess

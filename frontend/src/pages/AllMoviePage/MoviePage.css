@@ -1,0 +1,59 @@
+.all-movie-page {
+  padding: 100px 20px;
+  width: 1200px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.movie-header-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.arrow-icon-all-movie {
+  font-size: 10px;
+}
+.movie-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  /* background: linear-gradient(90deg, #ff4b2b, #ff416c); */
+  padding: 12px 0;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: fit-content;
+}
+.movie-section-title.playing-now {
+  font-size: 22px;
+}
+
+.movie-section-title.upcoming:hover {
+  transform: translateY(-2px);
+  cursor: pointer;
+}
+.pagination-container {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}

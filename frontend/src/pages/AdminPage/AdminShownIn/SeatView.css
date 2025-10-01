@@ -1,0 +1,59 @@
+.seat-container {
+  padding: 20px;
+  width: 1000px !important;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr); /* 24 columns of equal width */
+  gap: 10px;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.seat-item {
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  width: 37px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat-item.empty {
+  background-color: #d4f4dd;
+  border: 1px solid #7ed6a0;
+  color: #2e7d32;
+}
+
+.seat-item.booked {
+  background-color: #f8d7da;
+  border: 1px solid #e74c3c;
+  color: #c0392b;
+}
+.seat-item.pending {
+  background-color: #ffe4b2;
+  border: 1px solid #ffa500;
+  color: #8b4513;
+}
+.seat-item.double-seat {
+  background-color: #e6e6fa;
+  border: 2px dashed #6a5acd;
+  color: #483d8b;
+}
+
+.seat-legend {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.seat-legend .seat-item {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}

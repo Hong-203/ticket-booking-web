@@ -1,0 +1,73 @@
+.payment-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 24px;
+  font-family: 'Inter, sans-serif';
+}
+
+.payment-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.payment-header {
+  margin-bottom: 24px;
+}
+
+.back-button {
+  margin-bottom: 16px;
+}
+
+.payment-method-icon {
+  font-size: 18px;
+  color: #1890ff;
+}
+
+.payment-method-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-method-label {
+  font-weight: bold;
+}
+
+.payment-method-description {
+  font-size: 12px;
+}
+
+.ssl-notice {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 24px;
+}
+
+.ssl-notice-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ssl-notice-text {
+  color: #52c41a;
+  font-weight: bold;
+}
+
+.ssl-notice-description {
+  font-size: 12px;
+  color: #52c41a;
+}
+
+.submit-button {
+  height: 50px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ticket-summary {
+  position: sticky;
+  top: 24px;
+}

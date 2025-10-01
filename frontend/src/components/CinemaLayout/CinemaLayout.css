@@ -1,0 +1,348 @@
+/* CinemaLayout.css */
+/* .cinema-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding: 63px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+} */
+
+.cinema-card {
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.cinema-header {
+  text-align: center;
+  padding: 30px 20px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin: -24px -24px 30px -24px;
+}
+
+.cinema-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+}
+
+.movie-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  color: white;
+  opacity: 0.95;
+}
+
+.movie-info p {
+  margin: 0;
+  font-size: 14px;
+  color: white;
+  opacity: 0.8;
+}
+
+/* Màn hình */
+.screen-container {
+  text-align: center;
+  margin: 40px 0 50px 0;
+  position: relative;
+}
+
+.screen {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  height: 80px;
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 0 0 50px 50px;
+  position: relative;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: perspective(500px) rotateX(-10deg);
+}
+
+.screen-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+}
+
+.screen-shadow {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0.2) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+}
+
+/* Container ghế */
+.seats-container {
+  padding: 0 20px;
+}
+
+.seat-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.section-gap {
+  /* height: 30px; */
+  border-bottom: 2px dashed #e0e0e0;
+  margin: 30px 0;
+}
+
+/* Hàng ghế */
+.seat-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.row-label {
+  width: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #2c3e50;
+}
+
+.seats-in-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.seat-gap {
+  width: 30px;
+}
+
+/* Ghế */
+.seat {
+  width: 25px;
+  height: 25px;
+  border-radius: 8px 8px 12px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.seat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.seat-number {
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Trạng thái ghế đôi */
+.seat.couple {
+  width: 55px;
+  border-radius: 12px 12px 16px 16px;
+  position: relative;
+}
+
+.seat.couple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 60%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Trạng thái ghế đơn */
+.seat.single.empty {
+  background: linear-gradient(135deg, #4caf50, #2e7d32); /* Xanh lá đậm */
+  /* border: 2px solid #1b5e20; */
+  box-shadow: 0 0 4px #1b5e20;
+}
+
+.seat.single.pending {
+  background: linear-gradient(135deg, #ffa726, #fb8c00); /* Cam đậm */
+  /* border: 2px solid #ef6c00; */
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 6px #ef6c00;
+}
+
+.seat.single.booked {
+  background: linear-gradient(135deg, #e53935, #b71c1c); /* Đỏ đậm */
+  /* border: 2px solid #b71c1c; */
+  cursor: not-allowed;
+  box-shadow: 0 0 4px #b71c1c;
+}
+
+/* Trạng thái ghế đôi */
+.seat.couple.empty {
+  background: linear-gradient(135deg, #64b5f6, #1976d2); /* Xanh dương */
+  /* border: 2px solid #1565c0; */
+  box-shadow: 0 0 4px #1565c0;
+}
+
+.seat.couple.pending {
+  background: linear-gradient(135deg, #ff7043, #e64a19); /* Cam đỏ rực */
+  /* border: 2px solid #bf360c; */
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 6px #e64a19;
+}
+
+.seat.couple.booked {
+  background: linear-gradient(135deg, #8e24aa, #4a148c); /* Tím đậm */
+  /* border: 2px solid #4a148c; */
+  cursor: not-allowed;
+  box-shadow: 0 0 4px #4a148c;
+}
+
+/* Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(255, 152, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 152, 0, 0);
+  }
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 40px 0 30px 0;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.legend .seat {
+  cursor: default;
+  transform: none !important;
+}
+
+.legend .seat:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Summary */
+.summary {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.summary-item {
+  font-size: 16px;
+  color: #2c3e50;
+  padding: 10px 20px;
+  background: white;
+  border-radius: 8px;
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cinema-container {
+    padding: 10px;
+  }
+
+  .seats-in-row {
+    gap: 4px;
+  }
+
+  .seat {
+    width: 28px;
+    height: 28px;
+    font-size: 8px;
+  }
+
+  .seat.couple {
+    width: 58px;
+  }
+
+  .seat-number {
+    font-size: 8px;
+  }
+
+  .legend {
+    gap: 15px;
+  }
+
+  .legend-item {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .seat {
+    width: 24px;
+    height: 24px;
+  }
+
+  .seat.couple {
+    width: 50px;
+  }
+
+  .seat-number {
+    font-size: 7px;
+  }
+
+  .row-label {
+    width: 30px;
+    font-size: 14px;
+  }
+}

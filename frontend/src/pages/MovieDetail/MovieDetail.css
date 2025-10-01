@@ -1,0 +1,210 @@
+.movie-detail__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.movie-detail__wrapper {
+  background-color: #1a1d2c; /* Light background for the whole page */
+  min-height: 100vh;
+  padding: 63px 0;
+}
+
+/* Hero Section */
+.movie-detail__hero {
+  position: relative;
+  height: 500px; /* Adjust height as needed */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 0 48px;
+}
+
+.movie-detail__hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  display: flex;
+  align-items: center;
+}
+
+.movie-detail__hero-content {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto; /* Center content within overlay */
+  width: 100%;
+}
+
+.movie-detail__hero-poster {
+  width: 300px; /* Larger poster in hero */
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+}
+
+.movie-detail__hero-info {
+  flex: 1;
+}
+
+.movie-detail__title {
+  color: #fff !important;
+  font-size: 3.5em !important;
+  margin-bottom: 10px !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.movie-detail__meta {
+  color: #e0e0e0;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+}
+
+.movie-detail__tags .ant-tag {
+  font-size: 0.9em;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin-bottom: 8px;
+}
+
+.movie-detail__synopsis-short {
+  color: #ccc;
+  font-size: 1.1em;
+  line-height: 1.5;
+  max-width: 600px; /* Limit width for readability */
+}
+
+/* Main Content Section */
+.movie-detail__content {
+  padding: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin-top: -80px; /* Overlap with hero section */
+  position: relative;
+  z-index: 1;
+}
+
+.movie-detail__content h3 {
+  color: #1890ff; /* Ant Design primary blue */
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 10px;
+}
+
+.ant-typography.text-detail-movie-ss.css-dev-only-do-not-override-mc1tut,
+.text-movie-dt_ss {
+  color: #fff !important;
+}
+.movie-detail__section {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.movie-detail__section .ant-tag {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+}
+
+.movie-detail__synopsis-full {
+  font-size: 1.1em;
+  line-height: 1.7;
+  color: #333;
+}
+
+.movie-detail__trailer-wrapper {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.movie-buy-ticket {
+  margin-top: 20px;
+  text-align: left; /* hoặc center tùy bạn muốn căn giữa hay không */
+}
+
+.movie-buy-ticket .ant-btn {
+  background-color: #ff4d4f; /* đỏ điện ảnh */
+  border-color: #ff4d4f;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.movie-buy-ticket .ant-btn:hover {
+  background-color: #d9363e;
+  border-color: #d9363e;
+  color: #fff;
+}
+
+.movie-buy-ticket .ant-btn {
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .movie-detail__hero {
+    height: auto;
+    padding: 32px;
+  }
+
+  .movie-detail__hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .movie-detail__hero-info {
+    text-align: center;
+  }
+
+  .movie-detail__hero-poster {
+    margin-bottom: 20px;
+  }
+
+  .movie-detail__title {
+    font-size: 2.5em !important;
+  }
+
+  .movie-detail__content {
+    padding: 32px;
+    margin-top: 0;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .movie-detail__hero {
+    padding: 24px;
+  }
+
+  .movie-detail__hero-poster {
+    width: 200px;
+  }
+
+  .movie-detail__title {
+    font-size: 2em !important;
+  }
+
+  .movie-detail__content {
+    padding: 24px;
+  }
+}

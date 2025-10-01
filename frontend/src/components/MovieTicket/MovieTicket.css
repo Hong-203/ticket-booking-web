@@ -1,0 +1,266 @@
+.ticket-container {
+  max-width: 450px;
+  /* margin: 20px auto; */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.movie-ticket {
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  border-radius: 20px;
+  padding: 0;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.movie-ticket::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h20v-20H20z'/%3E%3C/g%3E%3C/svg%3E")
+    repeat;
+  pointer-events: none;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.95);
+  padding-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px dashed #667eea;
+  position: relative;
+  z-index: 1;
+}
+
+.ticket-body {
+  background: white;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.movie-poster {
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+}
+
+.movie-title {
+  color: #2c3e50;
+  margin: 10px 0 !important;
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.movie-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin: 12px 0; */
+  /* padding: 8px 0; */
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-icon {
+  color: #667eea;
+  font-size: 16px;
+}
+
+.info-text {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.price-tag {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.theatre-info {
+  /* background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); */
+  color: #2c3e50;
+  /* padding: 15px; */
+  border-radius: 12px;
+  /* margin-top: 15px; */
+  text-align: center;
+}
+
+.theatre-name-ticket {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.theatre-location-ticket {
+  opacity: 0.9;
+  font-size: 14px;
+  text-align: center;
+}
+
+.ticket-footer {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.price-movie-ticket {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+.qr-placeholder {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.ticket-id {
+  color: #6c757d;
+  font-size: 12px;
+  text-align: right;
+}
+
+.show-type-tag {
+  background: #52c41a;
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.synopsis {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  border-left: 4px solid #667eea;
+  font-style: italic;
+  color: #495057;
+}
+
+.cast-info {
+  color: #666;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.booking-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 25px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-back,
+.btn-confirm {
+  /* padding: 12px 24px; */
+  border: none;
+  border-radius: 25px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-back {
+  background: linear-gradient(135deg, #6c757d, #495057);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-back:hover {
+  background: linear-gradient(135deg, #5a6268, #3d4043);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-confirm:hover {
+  background: linear-gradient(135deg, #218838, #1da88a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.icon-arrow-left::before {
+  content: '←';
+  font-size: 1.1rem;
+}
+
+.icon-arrow-right::before {
+  content: '→';
+  font-size: 1.1rem;
+}
+
+.concession-item-wrapper {
+  border-top: 2px dashed #667eea;
+  border-bottom: 2px dashed #667eea;
+  padding: 20px;
+}
+.concession-item {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.concession-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+}
+
+.concession-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

@@ -1,31 +1,30 @@
-FROM node:18-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++ libc6-compat
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 g++ make \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-
-RUN npm ci
+RUN npm install
 
 COPY . .
 
 RUN npm run build
 
-FROM node:18-alpine AS runner
-
+FROM node:20-slim AS runner
 WORKDIR /app
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN useradd -m nestuser
 
-COPY --from=builder /app/package*.json ./
-
-COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
-USER appuser
+RUN mkdir -p /app/uploads && chown -R nestuser:nestuser /app/uploads
 
-EXPOSE 3000
+USER nestuser
 
 CMD ["node", "dist/main.js"]

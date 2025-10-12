@@ -10,6 +10,7 @@ import * as bcrypt from 'bcryptjs'; // Đảm bảo import đúng
 import { User } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { AccountType } from 'src/constants';
 
 @Injectable()
 export class AuthService {
@@ -122,6 +123,60 @@ export class AuthService {
     } catch (error) {
       this.logger.error('Register error:', error); // Sử dụng logger
       throw error;
+    }
+  }
+
+  // ==========================================
+  // 3️⃣ GOOGLE LOGIN (Chuẩn format)
+  // ==========================================
+  async googleLogin(req: any) {
+    if (!req.user) {
+      this.logger.warn('Google login failed: no user from Google');
+      throw new UnauthorizedException('No user data from Google');
+    }
+
+    const { email, username } = req.user;
+
+    let user = await this.usersService.findByEmail(email);
+    this.logger.debug('user', user);
+    // Nếu user chưa tồn tại → tạo mới
+    if (!user) {
+      this.logger.log(`Creating new user from Google: ${email}`);
+
+      user = await this.usersService.create({
+        email,
+        full_name: username,
+        password: '', // Không có password vì đăng nhập bằng Google
+        account_type: AccountType.Customer,
+        is_active: true,
+      });
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      phone: user.phone_number || null,
+      role: user.account_type,
+    };
+
+    this.logger.debug(`JWT Payload (Google Login): ${JSON.stringify(payload)}`);
+
+    try {
+      const token = this.jwtService.sign(payload);
+
+      return {
+        id: user.id,
+        username: user.full_name,
+        role: user.account_type,
+        email: user.email,
+        phone: user.phone_number || null,
+        token,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error signing JWT for Google user ${email}: ${error.message}`,
+      );
+      throw new InternalServerErrorException('Failed to generate token.');
     }
   }
 }

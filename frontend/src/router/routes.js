@@ -3,6 +3,7 @@ import AdminPageHome from '../pages/AdminPage/AdminPageHome/AdminPageHome'
 import AdminShowin from '../pages/AdminPage/AdminShownIn/AdminShowin'
 import AllMoviePage from '../pages/AllMoviePage/AllMoviePage'
 import ComingSoonPage from '../pages/AllMoviePage/ComingSoonPage'
+import AuthSuccess from '../pages/AuthSuccess/AuthSuccess'
 import BookingPage from '../pages/BookingPage/BookingPage'
 import HomePage from '../pages/Home/HomePage'
 import Login from '../pages/Login/Login'
@@ -58,6 +59,10 @@ export const routes = [
   {
     path: '/login',
     page: Login
+  },
+  {
+    path: '/auth-success',
+    page: AuthSuccess
   },
   {
     path: '/admin',

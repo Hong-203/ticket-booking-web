@@ -1,4 +1,4 @@
-import './polyfill'; 
+import './polyfill';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { API_PREFIX } from './constants';
@@ -46,10 +46,10 @@ async function bootstrap() {
 
   logger.log(`${appName} is running in ${nodeEnv} mode`);
   logger.log(
-    `🚀 App listening on: ${serverMethod}://${serverHost}:${port}/${API_PREFIX}`,
+    `🚀 App listening on: ${serverMethod}://${serverHost}/${API_PREFIX}`,
   );
   logger.log(
-    `📚 Swagger available at: ${serverMethod}://${serverHost}:${port}/${API_PREFIX}/documentation`,
+    `📚 Swagger available at: ${serverMethod}://${serverHost}/${API_PREFIX}/documentation`,
   );
 }
 bootstrap();

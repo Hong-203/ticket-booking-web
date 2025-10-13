@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Res,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -14,12 +15,16 @@ import {
   ApiOperation,
   ApiBody,
   ApiCreatedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import ForgotPasswordDto from './dto/forgot-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { RolesGuard } from './roles.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -52,6 +57,18 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
     console.log('ók');
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto.email);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('change-password')
+  async changePassword(@Request() req, @Body() dto: ChangePasswordDto) {
+    return this.authService.changePassword(req.user.userId, dto);
   }
 
   @Get('google/callback')

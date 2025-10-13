@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(user: Partial<User>): Promise<User> {
@@ -54,5 +56,22 @@ export class UsersService {
     }
     user.password = newPassword;
     await this.userRepository.save(user);
+  }
+
+  async updateAvatar(userId: string, fileBuffer: Buffer): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    // ✅ Upload ảnh lên Cloudinary
+    const imageUrl = await this.cloudinaryService.uploadImage(
+      fileBuffer,
+      'avatar-user',
+    );
+
+    // ✅ Cập nhật DB
+    user.avatar_url = imageUrl;
+    await this.userRepository.save(user);
+
+    return user;
   }
 }

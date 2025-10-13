@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Default from './components/Default/Default'
 import { routes } from './router/routes'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const getInitialAdminState = () => {
@@ -25,6 +26,7 @@ function App() {
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
+        <ToastContainer />
         <Routes>
           {routes.map(({ path, page: Page, isPrivate, isShowHeader }, idx) => {
             const Layout = isShowHeader ? Default : Fragment

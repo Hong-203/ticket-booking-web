@@ -46,4 +46,13 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
   }
+
+  async updatePassword(id: string, newPassword: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.password = newPassword;
+    await this.userRepository.save(user);
+  }
 }

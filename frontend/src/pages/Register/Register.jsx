@@ -19,7 +19,11 @@ const Register = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const baseURL = import.meta.env.VITE_BACKEND_URL
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${baseURL}/auth/google`
+  }
   const handleSignup = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -64,14 +68,17 @@ const Register = () => {
           <h2 className="res-signup-title">Sign up to buy Corner Seat</h2>
 
           <div className="res-social-buttons">
-            <button className="res-social-button res-google">
+            <button
+              className="res-social-button res-google"
+              onClick={handleGoogleLogin}
+            >
               Sign up with
               <Icon icon="logos:google-icon" className="res-icon" width={32} />
             </button>
-            <button className="res-social-button res-facebook">
+            {/* <button className="res-social-button res-facebook">
               Sign up with
               <Icon icon="logos:facebook" className="res-icon" width={34} />
-            </button>
+            </button> */}
           </div>
 
           <div className="res-separator">

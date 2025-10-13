@@ -17,6 +17,7 @@ const Login = ({ setIsAdmin }) => {
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const baseURL = import.meta.env.VITE_BACKEND_URL
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -43,6 +44,10 @@ const Login = ({ setIsAdmin }) => {
     }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = `${baseURL}/auth/google`
+  }
+
   return (
     <div className="login-container">
       <video
@@ -65,14 +70,14 @@ const Login = ({ setIsAdmin }) => {
           </div>
 
           <div className="social-login">
-            <button className="google-button">
+            <button className="google-button" onClick={handleGoogleLogin}>
               Log in with
               <Icon icon="logos:google-icon" className="icon" />
             </button>
-            <button className="facebook-button">
+            {/* <button className="facebook-button">
               Log in with
               <Icon icon="logos:facebook" className="icon" />
-            </button>
+            </button> */}
           </div>
 
           <div className="separator">

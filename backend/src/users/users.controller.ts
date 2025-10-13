@@ -10,13 +10,17 @@ import {
   Patch,
   ForbiddenException,
   Delete,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -42,6 +46,29 @@ export class UsersController {
   async getAllUsers() {
     const users = await this.usersService.findAll();
     return users.map(({ password, ...rest }) => rest);
+  }
+
+  @Patch('avatar')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  async updateAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+
+    const updatedUser = await this.usersService.updateAvatar(
+      req.user.userId,
+      file.buffer,
+    );
+    const { password, ...result } = updatedUser;
+    return {
+      message: 'Avatar updated successfully',
+      user: result,
+    };
   }
 
   @Patch(':id')

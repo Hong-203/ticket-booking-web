@@ -138,6 +138,74 @@ const updateUser = (id, userData) => async (dispatch) => {
   }
 }
 
+const forgotPassword = (data) => async (dispatch) => {
+  dispatch(getRequest())
+  try {
+    const config = getAuthConfig()
+    const res = await axios.post(`/auth/forgot-password`, data, config)
+    if (res.data.message) {
+      dispatch(getFailed(res.data.message))
+    } else {
+      return { success: true }
+    }
+  } catch (error) {
+    dispatch(getError(error.message))
+  }
+}
+
+const changePassword = (data) => async (dispatch) => {
+  dispatch(getRequest())
+  try {
+    const config = getAuthConfig()
+    const res = await axios.post(`/auth/change-password`, data, config)
+    console.log('res', res)
+    if (res.data.message) {
+      return { success: true }
+    }
+    return { success: false, message: 'Đổi mật khẩu thất bại!' }
+  } catch (error) {
+    dispatch(getError(error.message))
+  }
+}
+
+const updateAvatar = (formData) => async (dispatch) => {
+  dispatch(getRequest())
+  try {
+    const user =
+      JSON.parse(localStorage.getItem('user')) || localStorage.getItem('token')
+    const token = user?.token
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+
+    const res = await axios.patch(`/users/avatar`, formData, config)
+    console.log('res', res)
+
+    if (res.data.message) {
+      return {
+        success: true,
+        message: res.data.message,
+        user: res.data.user
+      }
+    }
+
+    return { success: false, message: 'Cập nhật avatar thất bại!' }
+  } catch (error) {
+    console.error('updateAvatar error:', error)
+    dispatch(getError(error.message))
+
+    return {
+      success: false,
+      message:
+        error.response?.data?.message || 'Đã xảy ra lỗi khi cập nhật avatar!'
+    }
+  }
+}
+
 const getAllUser = () => async (dispatch) => {
   dispatch(getRequest())
   try {
@@ -168,4 +236,14 @@ const deleteUser = (id) => async (dispatch) => {
   }
 }
 
-export { register, login, getUserProfile, updateUser, getAllUser, deleteUser }
+export {
+  register,
+  login,
+  getUserProfile,
+  updateUser,
+  getAllUser,
+  deleteUser,
+  forgotPassword,
+  changePassword,
+  updateAvatar
+}

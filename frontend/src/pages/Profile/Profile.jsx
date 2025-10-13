@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Card,
   Avatar,
@@ -32,7 +32,13 @@ import {
 } from '@ant-design/icons'
 import './Profile.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserProfile, updateUser } from '../../stores/Users/userApis'
+import {
+  getUserProfile,
+  updateAvatar,
+  updateUser
+} from '../../stores/Users/userApis'
+import ChangePasswordModal from '../../components/Profile/ChangePasswordModal'
+import { toast } from 'react-toastify'
 
 const { Title, Text } = Typography
 const { Option } = Select
@@ -43,6 +49,8 @@ const ProfilePage = () => {
   const [editFormData, setEditFormData] = useState({})
   const profile = useSelector((state) => state.user.profile || {})
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+  const fileInputRef = useRef(null)
   // const navigate = useNavigate()
 
   useEffect(() => {
@@ -124,10 +132,10 @@ const ProfilePage = () => {
     })
     setEditModalVisible(true)
   }
-
+  const handleChangePassword = () => {}
   const handleSaveProfile = async () => {
     await dispatch(updateUser(profile.id, editFormData))
-    message.success('Cập nhật thông tin thành công!')
+    toast.success('Cập nhật thông tin thành công!')
     setEditModalVisible(false)
   }
 
@@ -168,6 +176,34 @@ const ProfilePage = () => {
     }))
   }
 
+  const handleClickUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error('Ảnh quá lớn, vui lòng chọn ảnh dưới 3MB!')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    setLoading(true)
+    const res = await dispatch(updateAvatar(formData))
+    setLoading(false)
+
+    if (res?.success) {
+      toast.success('Cập nhật ảnh đại diện thành công!')
+      dispatch(getUserProfile())
+    } else {
+      toast.error(res?.message || 'Cập nhật thất bại!')
+    }
+  }
+
   return (
     <div
       style={{
@@ -196,17 +232,21 @@ const ProfilePage = () => {
               <div style={{ position: 'relative', display: 'inline-block' }}>
                 <Avatar
                   size={120}
-                  src={profile.avatar_url}
+                  src={profile?.avatar_url}
                   icon={<UserOutlined />}
                   style={{
                     border: '4px solid rgba(255,255,255,0.3)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)'
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                    opacity: loading ? 0.5 : 1,
+                    transition: 'opacity 0.3s ease'
                   }}
                 />
                 <Button
                   icon={<CameraOutlined />}
                   size="small"
                   shape="circle"
+                  onClick={handleClickUpload}
+                  loading={loading}
                   style={{
                     position: 'absolute',
                     bottom: '0',
@@ -215,6 +255,14 @@ const ProfilePage = () => {
                     border: 'none',
                     color: 'white'
                   }}
+                />
+                {/* input file ẩn */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
                 />
               </div>
             </Col>
@@ -276,7 +324,16 @@ const ProfilePage = () => {
                     </Text>
                   )}
                 </Space>
-                <Space className="edit-btn-profile">
+                <Space
+                  className="edit-btn-profile"
+                  direction="horizontal"
+                  size="middle"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end', // hoặc 'center'
+                    width: '100%'
+                  }}
+                >
                   <Button
                     type="primary"
                     icon={<EditOutlined />}
@@ -289,6 +346,7 @@ const ProfilePage = () => {
                   >
                     Chỉnh sửa thông tin
                   </Button>
+                  <ChangePasswordModal />
                 </Space>
               </div>
             </Col>

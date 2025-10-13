@@ -16,7 +16,7 @@ export class CloudinaryService {
 
   async uploadImage(
     fileBuffer: Buffer,
-    folder = 'your-folder-name',
+    folder = 'avatar-user',
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(

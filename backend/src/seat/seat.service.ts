@@ -62,14 +62,13 @@ export class SeatService {
     await this.seatRepository.remove(seat);
   }
 
-  // seat booking
   async createSeatBookings(
     user_id: string,
     dto: CreateSeatBookingDto,
   ): Promise<SeatBooking[]> {
     const { seat_ids, movie_id, hall_id, showtime_id } = dto;
 
-    const bookings: SeatBooking[] = [];
+    const createdOrExisting: SeatBooking[] = [];
 
     for (const seat_id of seat_ids) {
       const existing = await this.seatBookingRepo.findOne({
@@ -77,25 +76,42 @@ export class SeatService {
       });
 
       if (existing) {
-        throw new BadRequestException(
-          `Ghế ${seat_id} đã được đặt hoặc đang giữ`,
-        );
-      }
+        // ⚡ Nếu ghế đã có trong DB
+        if (existing.user_id === user_id) {
+          // Cùng user → giữ nguyên, không tạo lại
+          createdOrExisting.push(existing);
+        } else {
+          // Khác user → ghế đang được giữ hoặc đã đặt
+          throw new BadRequestException(`Ghế ${seat_id} đã được đặt hoặc đang giữ.`);
+        }
+      } else {
+        // ✅ Nếu chưa có → tạo mới
+        const newBooking = this.seatBookingRepo.create({
+          user_id,
+          seat_id,
+          movie_id,
+          hall_id,
+          showtime_id,
+          status: SeatBookingStatus.Pending,
+        });
 
-      const booking = this.seatBookingRepo.create({
+        const saved = await this.seatBookingRepo.save(newBooking);
+        createdOrExisting.push(saved);
+      }
+    }
+
+    const allUserBookings = await this.seatBookingRepo.find({
+      where: {
         user_id,
-        seat_id,
         movie_id,
         hall_id,
         showtime_id,
         status: SeatBookingStatus.Pending,
-      });
+      },
+      relations: ['seat'], 
+    });
 
-      await this.seatBookingRepo.save(booking);
-      bookings.push(booking);
-    }
-
-    return bookings;
+    return allUserBookings;
   }
 
   async getAvailableSeats(

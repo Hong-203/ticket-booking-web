@@ -20,6 +20,7 @@ import {
   CreatePaymentZaloPayDto,
 } from './dto/create-momo.dto';
 import { console } from 'inspector';
+import { SeatBooking } from 'src/seat/entities/seat_booking.entity';
 const logger = new Logger('PaymentService');
 
 @Injectable()
@@ -29,6 +30,8 @@ export class PaymentService {
     private paymentRepo: Repository<Payment>,
     @InjectRepository(Ticket)
     private ticketRepo: Repository<Ticket>,
+        @InjectRepository(SeatBooking)
+        private readonly seatBookingRepo: Repository<SeatBooking>,
   ) {}
 
   async createMoMoPayment(dto: CreatePaymentMoMoDto) {
@@ -57,7 +60,7 @@ export class PaymentService {
       throw new Error('MOMO_SECRET_KEY is not defined');
     }
 
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=captureWallet`;
+    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=payWithMethod`;
 
     const signature = crypto
       .createHmac('sha256', secretKey)
@@ -74,7 +77,7 @@ export class PaymentService {
       redirectUrl,
       ipnUrl,
       extraData: '',
-      requestType: 'captureWallet',
+      requestType: 'payWithMethod',
       signature,
       lang: 'vi',
     };
@@ -213,75 +216,63 @@ export class PaymentService {
     return { message: 'IPN processed successfully' };
   }
 
-  async handleZaloPayCallback(body: any) {
-    try {
-      logger.debug('Received body:', JSON.stringify(body));
+async handleZaloPayCallback(body: any) {
+  try {
+    logger.debug('Received body:', JSON.stringify(body));
 
-      const embedData = JSON.parse(body.data.embed_data);
-      const ticketId = embedData.ticketId;
-      const dataStr = JSON.stringify(body.data);
-      const reqMac = body.mac;
-      const key2 = process.env.ZALO_KEY2;
+    // ✅ Parse data từ chuỗi JSON sang object
+    const data = JSON.parse(body.data);
 
-      logger.debug('Parsed embedData:', embedData);
-      logger.debug('Extracted ticketId:', ticketId);
-      logger.debug('Generated dataStr:', dataStr);
-      logger.debug('Received mac from ZaloPay:', reqMac);
-      logger.debug('Loaded key2 from env:', !!key2);
+    // ✅ Lấy embed_data trong object đã parse
+    const embedData = JSON.parse(data.embed_data);
+    const ticketId = embedData.ticketId;
 
-      if (!key2) throw new Error('ZALO_KEY2 is missing');
+    const dataStr = body.data; // chuỗi gốc (chưa stringify thêm lần nữa)
+    const reqMac = body.mac;
+    const key2 = process.env.ZALO_KEY2;
 
-      // Verify MAC
-      const mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
-      logger.debug('Generated mac from dataStr:', mac);
+    logger.debug('Parsed embedData:', embedData);
+    logger.debug('Extracted ticketId:', ticketId);
+    logger.debug('Received mac from ZaloPay:', reqMac);
+    logger.debug('Loaded key2 from env:', !!key2);
 
-      if (mac !== reqMac) {
-        logger.warn('MAC mismatch - possible tampering!');
-        return { return_code: -1, return_message: 'Invalid MAC' };
-      }
+    if (!key2) throw new Error('ZALO_KEY2 is missing');
 
-      // Parse data again (redundant, can reuse body.data directly)
-      let data: any;
-      try {
-        data = JSON.parse(dataStr);
-        logger.debug('Parsed data:', data);
-      } catch (e) {
-        logger.error('Failed to parse dataStr:', e);
-        return { return_code: -1, return_message: 'Invalid data format' };
-      }
-
-      // Find payment
-      const payment = await this.paymentRepo.findOne({
-        where: {
-          ticket: { id: ticketId },
-          method: PaymentMethod.ZALOPAY,
-        },
-        relations: ['ticket'],
-      });
-
-      if (!payment) {
-        logger.warn('Payment not found for ticketId:', ticketId);
-        return { return_code: -1, return_message: 'Payment not found' };
-      }
-
-      logger.debug('Payment found:', payment);
-
-      // Update payment status
-      payment.status = PaymentStatus.COMPLETED;
-      await this.paymentRepo.save(payment);
-      logger.debug('Updated payment status to COMPLETED');
-
-      // Update ticket status
-      payment.ticket.status = TicketStatus.BOOKED;
-      await this.ticketRepo.save(payment.ticket);
-      logger.debug('Updated ticket status to BOOKED');
-
-      return { return_code: 1, return_message: 'Success' };
-    } catch (err) {
-      logger.error('handleZaloPayCallback error:', err);
-      return { return_code: -1, return_message: 'Internal Server Error' };
+    // ✅ Verify MAC
+    const mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
+    if (mac !== reqMac) {
+      logger.warn('MAC mismatch - possible tampering!');
+      return { return_code: -1, return_message: 'Invalid MAC' };
     }
+
+    // ✅ Find payment & update
+    const payment = await this.paymentRepo.findOne({
+      where: {
+        ticket: { id: ticketId },
+        method: PaymentMethod.ZALOPAY,
+      },
+      relations: ['ticket'],
+    });
+
+    if (!payment) {
+      logger.warn('Payment not found for ticketId:', ticketId);
+      return { return_code: -1, return_message: 'Payment not found' };
+    }
+
+    payment.status = PaymentStatus.COMPLETED;
+    await this.paymentRepo.save(payment);
+
+    payment.ticket.status = TicketStatus.BOOKED;
+    await this.ticketRepo.save(payment.ticket);
+
+    logger.debug('Payment and ticket updated successfully.');
+    return { return_code: 1, return_message: 'Success' };
+  } catch (err) {
+    logger.error('handleZaloPayCallback error:', err);
+    return { return_code: -1, return_message: 'Internal Server Error' };
   }
+}
+
 
   /// mobile payment
   async createZaloPayPaymentMobile(ticketId: string) {
@@ -407,7 +398,7 @@ export class PaymentService {
       throw new Error('MOMO_SECRET_KEY is not defined');
     }
 
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=captureWallet`;
+    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=payWithMethod`;
 
     const signature = crypto
       .createHmac('sha256', secretKey)
@@ -424,7 +415,7 @@ export class PaymentService {
       redirectUrl,
       ipnUrl,
       extraData: '',
-      requestType: 'captureWallet',
+      requestType: 'payWithMethod',
       signature,
       lang: 'vi',
     };

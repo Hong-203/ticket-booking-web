@@ -1,7 +1,11 @@
 .payment-success-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #b3bada 0%, #766d7e 100%);
   padding: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .payment-success-wrapper {

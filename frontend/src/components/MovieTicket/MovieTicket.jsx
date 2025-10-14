@@ -119,7 +119,7 @@ const MovieTicket = ({
       showtime_id: showtimeId
     }
 
-    const bookingData = await dispatch(createBooking(data)) // ⬅️ lấy dữ liệu từ backend
+    const bookingData = await dispatch(createBooking(data))
     if (!bookingData) {
       console.error('Booking failed.')
       return

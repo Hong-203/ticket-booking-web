@@ -38,74 +38,96 @@ const CinemaLayout = ({
   // Cập nhật state seats từ seatList
 
   useEffect(() => {
-    if (!Array.isArray(seatList)) return
+    if (!Array.isArray(seatList)) return;
 
-    const seatData = {}
+    const seatData = {};
+    const userSelectedSeats = [];
+
     seatList.forEach((seat) => {
-      const type = seat.name.startsWith('L') ? 'couple' : 'single'
-      console.log('seat', seat)
-      let status = seat.status
+      const type = seat?.name.startsWith('L') ? 'couple' : 'single';
+      let status = seat.status;
 
-      // Chỉ đánh dấu ghế pending nếu là của chính user hiện tại
+      // Nếu ghế thuộc về user hiện tại → coi như đang chọn
+      if (seat.user_id === currentUserId && status !== 'booked') {
+        status = 'pending';
+      }
+
+      // Nếu ghế pending nhưng thuộc user khác → coi như booked
       if (status === 'pending' && seat.user_id !== currentUserId) {
-        status = 'booked' // coi như là đã bị người khác chọn
+        status = 'booked';
       }
 
-      // Kiểm tra nếu user đang chọn lại (tương thích selectedSeats trong local)
-      const isSelected = selectedSeats.some(
-        (selectedSeat) => selectedSeat.name === seat.name
-      )
+      const seatInfo = { ...seat, type, status };
+      seatData[seat.name] = seatInfo;
 
-      // Ưu tiên ghế user đang chọn
-      if (isSelected) {
-        status = 'pending'
+      // Nếu là ghế của user → thêm vào danh sách selectedSeats
+      if (status === 'pending' && seat.user_id === currentUserId) {
+        userSelectedSeats.push({
+          id: seat.id,
+          name: seat.name,
+          type,
+          row: seat.name.charAt(0),
+          number: seat.name.slice(1),
+          price: seat.price || 0
+        });
       }
+    });
 
-      seatData[seat.name] = { ...seat, type, status }
-    })
+    setSeats(seatData);
+    setLoading(false);
 
-    setSeats(seatData)
-    setLoading(false)
-  }, [seatList, selectedSeats, currentUserId])
+    // 🔥 Nếu parent chưa có selectedSeats hoặc đang rỗng → set lại
+    if (selectedSeats.length === 0 && userSelectedSeats.length > 0) {
+      setSelectedSeats(userSelectedSeats);
+    }
+  }, [seatList, selectedSeats, currentUserId, setSelectedSeats]);
 
-  const handleSeatClick = (seatName) => {
-    const seat = seats[seatName]
-    if (
-      seat.status === 'booked' ||
-      (seat.status === 'pending' && seat.user_id !== currentUserId)
-    )
-      return
+// 🧠 Cập nhật lại handleSeatClick
+const handleSeatClick = (seatName) => {
+  const seat = seats[seatName];
+  if (!seat) return;
 
-    // Cập nhật local state
-    setSeats((prevSeats) => {
-      const newSeats = {
-        ...prevSeats,
-        [seatName]: {
-          ...seat,
-          status: seat.status === 'empty' ? 'pending' : 'empty'
-        }
-      }
+  // Nếu ghế đã đặt hoặc pending bởi user khác → không cho chọn
+  if (
+    seat.status === 'booked' ||
+    (seat.status === 'pending' && seat.user_id !== currentUserId)
+  )
+    return;
 
-      // Cập nhật selectedSeats trong parent component
-      const updatedSelectedSeats = Object.values(newSeats)
-        .filter((s) => s.status === 'pending')
-        .map((s) => ({
-          id: s.id,
-          name: s.name,
-          type: s.type,
-          row: s.name.charAt(0),
-          number: s.name.slice(1)
-        }))
+  const isSelected = selectedSeats.some((s) => s.name === seatName);
 
-      setSelectedSeats(updatedSelectedSeats)
-
-      return newSeats
-    })
+  if (isSelected) {
+    // ❌ Bỏ chọn ghế
+    const updated = selectedSeats.filter((s) => s.name !== seatName);
+    setSelectedSeats(updated);
+  } else {
+    // ✅ Chọn ghế
+    const newSeat = {
+      id: seat.id,
+      name: seat.name,
+      type: seat.name.startsWith('L') ? 'couple' : 'single',
+      row: seat.name.charAt(0),
+      number: seat.name.slice(1),
+      price: seat.price || 0
+    };
+    const updated = [...selectedSeats, newSeat];
+    setSelectedSeats(updated);
   }
+};
 
-  const getSeatClassName = (seat) => {
-    return `seat ${seat.type} ${seat.status}`
-  }
+
+// 🎨 Cập nhật lại getSeatClassName — ưu tiên selectedSeats
+const getSeatClassName = (seat) => {
+  const isSelected = selectedSeats.some((s) => s.name === seat.name);
+  const isBooked =
+    seat.status === 'booked' ||
+    (seat.status === 'pending' && seat.user_id !== currentUserId);
+
+  if (isBooked) return `seat ${seat.type} booked`;
+  if (isSelected) return `seat ${seat.type} pending`;
+  return `seat ${seat.type} empty`;
+};
+
 
   const renderSeatRow = (rowLetter, startIndex = 1, endIndex = 24) => {
     const row = []
@@ -231,7 +253,7 @@ const CinemaLayout = ({
               </div>
               <div className="legend-item">
                 <div className="seat single pending" />
-                <span>Đang chọn ({getStatusCount('pending')})</span>
+                <span>Đang chọn {currentSelectedSeats.length}</span>
               </div>
               <div className="legend-item">
                 <div className="seat single booked" />

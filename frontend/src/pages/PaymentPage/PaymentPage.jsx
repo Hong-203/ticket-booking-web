@@ -10,7 +10,8 @@ import {
   Typography,
   message,
   Row,
-  Col
+  Col,
+  Spin
 } from 'antd'
 import {
   CreditCardOutlined,
@@ -36,17 +37,28 @@ const PaymentPage = () => {
   const [form] = Form.useForm()
   const [paymentMethod, setPaymentMethod] = useState('card')
   const [loading, setLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(true) // 🔥 Spin khi page chưa sẵn sàng
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [tickId, setTickId] = useState(null)
   const { ticketId } = useParams()
+
+  // Khi ticketId thay đổi → simulate loading nhỏ
   useEffect(() => {
     if (!ticketId) {
       console.warn('ticketId is missing from URL')
-    } else {
-      setTickId(ticketId)
+      setPageLoading(false)
+      return
     }
+
+    // Giả lập chờ dữ liệu hoặc xác nhận có ticketId
+    const timer = setTimeout(() => {
+      setPageLoading(false)
+    }, 400) // chờ 0.4s để Spin hiển thị nhẹ
+
+    return () => clearTimeout(timer)
   }, [ticketId])
+
+  // Set thông tin người dùng vào form
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'))
     if (storedUser) {
@@ -99,15 +111,14 @@ const PaymentPage = () => {
     try {
       setLoading(true)
       const values = await form.validateFields()
+
       if (paymentMethod === 'momo') {
         const res = await dispatch(createPayMomo({ ticketId }))
-        console.log('res.data', res.data)
         if (res?.data?.payUrl) {
           window.location.href = res.data.payUrl
         }
       } else if (paymentMethod === 'zalopay') {
         const res = await dispatch(createPayZaloPay({ ticketId }))
-        console.log('res.data', res.data)
         if (res?.data?.order_url) {
           window.location.href = res.data.order_url
         }
@@ -123,7 +134,7 @@ const PaymentPage = () => {
   }
 
   const handleBack = () => {
-    console.log('Navigate back')
+    navigate(-1)
   }
 
   const renderPaymentForm = () => {
@@ -199,193 +210,175 @@ const PaymentPage = () => {
           </Form.Item>
         )
 
-      // case 'momo':
-      //   return (
-      //     <Form.Item
-      //       name="momoPhone"
-      //       label="Số điện thoại MoMo"
-      //       rules={[
-      //         { required: true, message: 'Vui lòng nhập số điện thoại' },
-      //         { pattern: /^[0-9]{10}$/, message: 'Số điện thoại không hợp lệ' }
-      //       ]}
-      //     >
-      //       <Input placeholder="0901234567" prefix={<MobileOutlined />} />
-      //     </Form.Item>
-      //   )
-
-      // case 'zalopay':
-      //   return (
-      //     <Form.Item
-      //       name="zaloPhone"
-      //       label="Số điện thoại ZaloPay"
-      //       rules={[
-      //         { required: true, message: 'Vui lòng nhập số điện thoại' },
-      //         { pattern: /^[0-9]{10}$/, message: 'Số điện thoại không hợp lệ' }
-      //       ]}
-      //     >
-      //       <Input placeholder="0901234567" prefix={<MobileOutlined />} />
-      //     </Form.Item>
-      //   )
-
       default:
         return null
     }
   }
 
+  // 🔥 Render chính có Spin chờ dữ liệu ticketId
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#f5f5f5',
-        padding: '24px',
-        fontFamily: 'Inter, sans-serif'
-      }}
-    >
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '24px' }}>
-          <Button
-            icon={<ArrowLeftOutlined />}
-            onClick={handleBack}
-            style={{ marginBottom: '16px' }}
-          >
-            Quay lại
-          </Button>
-          <Title level={2} style={{ margin: 0 }}>
-            Thanh toán
-          </Title>
-        </div>
+    <Spin spinning={pageLoading} tip="Đang tải dữ liệu...">
+      <div
+        style={{
+          minHeight: '100vh',
+          backgroundColor: '#f5f5f5',
+          padding: '24px',
+          fontFamily: 'Inter, sans-serif'
+        }}
+      >
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{ marginBottom: '24px' }}>
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={handleBack}
+              style={{ marginBottom: '16px' }}
+            >
+              Quay lại
+            </Button>
+            <Title level={2} style={{ margin: 0 }}>
+              Thanh toán
+            </Title>
+          </div>
 
-        <Row gutter={24}>
-          {/* Payment Form */}
-          <Col xs={24} lg={14}>
-            <Card title="Phương thức thanh toán" bordered={false}>
-              {/* Payment Method Selection */}
-              <div style={{ marginBottom: '24px' }}>
-                <Radio.Group
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  style={{ width: '100%' }}
-                >
-                  {paymentMethods.map((method) => (
-                    <div key={method.value} style={{ marginBottom: '12px' }}>
-                      <Radio value={method.value} style={{ width: '100%' }}>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px'
-                          }}
-                        >
-                          <span style={{ fontSize: '18px', color: '#1890ff' }}>
-                            {method.icon}
-                          </span>
-                          <div>
-                            <div style={{ fontWeight: 'bold' }}>
-                              {method.label}
-                            </div>
-                            <Text type="secondary" style={{ fontSize: '12px' }}>
-                              {method.description}
-                            </Text>
-                          </div>
-                        </div>
-                      </Radio>
-                    </div>
-                  ))}
-                </Radio.Group>
-              </div>
-
-              <Divider />
-
-              {/* Payment Form */}
-              <Form form={form} layout="vertical" onFinish={handlePayment}>
-                {renderPaymentForm()}
-
-                {/* Contact Information */}
-                <Divider>Thông tin liên hệ</Divider>
-
-                <Form.Item
-                  name="email"
-                  label="Email"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập email' },
-                    { type: 'email', message: 'Email không hợp lệ' }
-                  ]}
-                >
-                  <Input placeholder="example@email.com" />
-                </Form.Item>
-
-                <Form.Item
-                  name="phone"
-                  label="Số điện thoại"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập số điện thoại' },
-                    {
-                      pattern: /^[0-9]{10}$/,
-                      message: 'Số điện thoại không hợp lệ'
-                    }
-                  ]}
-                >
-                  <Input placeholder="0901234567" />
-                </Form.Item>
-
-                {/* Security Notice */}
-                <div
-                  style={{
-                    backgroundColor: '#f6ffed',
-                    border: '1px solid #b7eb8f',
-                    borderRadius: '6px',
-                    padding: '12px',
-                    marginBottom: '24px'
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
+          <Row gutter={24}>
+            {/* Payment Form */}
+            <Col xs={24} lg={14}>
+              <Card title="Phương thức thanh toán" bordered={false}>
+                <div style={{ marginBottom: '24px' }}>
+                  <Radio.Group
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    style={{ width: '100%' }}
                   >
-                    <SafetyOutlined style={{ color: '#52c41a' }} />
-                    <Text style={{ color: '#52c41a', fontWeight: 'bold' }}>
-                      Bảo mật SSL 256-bit
-                    </Text>
-                  </div>
-                  <Text style={{ fontSize: '12px', color: '#52c41a' }}>
-                    Thông tin thanh toán của bạn được mã hóa và bảo mật
-                  </Text>
+                    {paymentMethods.map((method) => (
+                      <div key={method.value} style={{ marginBottom: '12px' }}>
+                        <Radio value={method.value} style={{ width: '100%' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px'
+                            }}
+                          >
+                            <span
+                              style={{ fontSize: '18px', color: '#1890ff' }}
+                            >
+                              {method.icon}
+                            </span>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>
+                                {method.label}
+                              </div>
+                              <Text
+                                type="secondary"
+                                style={{ fontSize: '12px' }}
+                              >
+                                {method.description}
+                              </Text>
+                            </div>
+                          </div>
+                        </Radio>
+                      </div>
+                    ))}
+                  </Radio.Group>
                 </div>
 
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    size="large"
-                    block
-                    icon={<CheckCircleOutlined />}
+                <Divider />
+
+                <Form form={form} layout="vertical" onFinish={handlePayment}>
+                  {renderPaymentForm()}
+
+                  <Divider>Thông tin liên hệ</Divider>
+
+                  <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                      { required: true, message: 'Vui lòng nhập email' },
+                      { type: 'email', message: 'Email không hợp lệ' }
+                    ]}
+                  >
+                    <Input placeholder="example@email.com" />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="phone"
+                    label="Số điện thoại"
+                    rules={[
+                      { required: true, message: 'Vui lòng nhập số điện thoại' },
+                      {
+                        pattern: /^[0-9]{10}$/,
+                        message: 'Số điện thoại không hợp lệ'
+                      }
+                    ]}
+                  >
+                    <Input placeholder="0901234567" />
+                  </Form.Item>
+
+                  <div
                     style={{
-                      height: '50px',
-                      fontSize: '16px',
-                      fontWeight: 'bold'
+                      backgroundColor: '#f6ffed',
+                      border: '1px solid #b7eb8f',
+                      borderRadius: '6px',
+                      padding: '12px',
+                      marginBottom: '24px'
                     }}
                   >
-                    {loading ? 'Đang xử lý...' : 'Thanh toán ngay'}
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Card>
-          </Col>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                    >
+                      <SafetyOutlined style={{ color: '#52c41a' }} />
+                      <Text
+                        style={{ color: '#52c41a', fontWeight: 'bold' }}
+                      >
+                        Bảo mật SSL 256-bit
+                      </Text>
+                    </div>
+                    <Text style={{ fontSize: '12px', color: '#52c41a' }}>
+                      Thông tin thanh toán của bạn được mã hóa và bảo mật
+                    </Text>
+                  </div>
 
-          {/* Ticket Summary */}
-          <Col xs={24} lg={10}>
-            <div style={{ position: 'sticky', top: '24px' }}>
-              <TicketDetail ticketId={tickId} />
-            </div>
-          </Col>
-        </Row>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      size="large"
+                      block
+                      icon={<CheckCircleOutlined />}
+                      style={{
+                        height: '50px',
+                        fontSize: '16px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {loading ? 'Đang xử lý...' : 'Thanh toán ngay'}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
+            </Col>
+
+            {/* Ticket Summary */}
+            <Col xs={24} lg={10}>
+              <div style={{ position: 'sticky', top: '24px' }}>
+                {ticketId ? (
+                  <TicketDetail ticketId={ticketId} />
+                ) : (
+                  <Spin tip="Đang tải chi tiết vé..." />
+                )}
+              </div>
+            </Col>
+          </Row>
+        </div>
       </div>
-    </div>
+    </Spin>
   )
 }
 

@@ -21,6 +21,7 @@ import {
 } from './dto/create-momo.dto';
 import { console } from 'inspector';
 import { SeatBooking } from 'src/seat/entities/seat_booking.entity';
+import { TicketService } from 'src/ticket/ticket.service';
 const logger = new Logger('PaymentService');
 
 @Injectable()
@@ -30,8 +31,10 @@ export class PaymentService {
     private paymentRepo: Repository<Payment>,
     @InjectRepository(Ticket)
     private ticketRepo: Repository<Ticket>,
-        @InjectRepository(SeatBooking)
-        private readonly seatBookingRepo: Repository<SeatBooking>,
+    @InjectRepository(SeatBooking)
+    private readonly seatBookingRepo: Repository<SeatBooking>,
+
+    private readonly ticketService: TicketService,
   ) {}
 
   async createMoMoPayment(dto: CreatePaymentMoMoDto) {
@@ -213,66 +216,72 @@ export class PaymentService {
       await this.ticketRepo.save(payment.ticket);
     }
 
+    await this.ticketService.ticketInfo(ticketId);
+    logger.debug('Send to mail successfully.');
+
     return { message: 'IPN processed successfully' };
   }
 
-async handleZaloPayCallback(body: any) {
-  try {
-    logger.debug('Received body:', JSON.stringify(body));
+  async handleZaloPayCallback(body: any) {
+    try {
+      logger.debug('Received body:', JSON.stringify(body));
 
-    // ✅ Parse data từ chuỗi JSON sang object
-    const data = JSON.parse(body.data);
+      // ✅ Parse data từ chuỗi JSON sang object
+      const data = JSON.parse(body.data);
 
-    // ✅ Lấy embed_data trong object đã parse
-    const embedData = JSON.parse(data.embed_data);
-    const ticketId = embedData.ticketId;
+      // ✅ Lấy embed_data trong object đã parse
+      const embedData = JSON.parse(data.embed_data);
+      const ticketId = embedData.ticketId;
 
-    const dataStr = body.data; // chuỗi gốc (chưa stringify thêm lần nữa)
-    const reqMac = body.mac;
-    const key2 = process.env.ZALO_KEY2;
+      const dataStr = body.data; // chuỗi gốc (chưa stringify thêm lần nữa)
+      const reqMac = body.mac;
+      const key2 = process.env.ZALO_KEY2;
 
-    logger.debug('Parsed embedData:', embedData);
-    logger.debug('Extracted ticketId:', ticketId);
-    logger.debug('Received mac from ZaloPay:', reqMac);
-    logger.debug('Loaded key2 from env:', !!key2);
+      logger.debug('Parsed embedData:', embedData);
+      logger.debug('Extracted ticketId:', ticketId);
+      logger.debug('Received mac from ZaloPay:', reqMac);
+      logger.debug('Loaded key2 from env:', !!key2);
 
-    if (!key2) throw new Error('ZALO_KEY2 is missing');
+      if (!key2) throw new Error('ZALO_KEY2 is missing');
 
-    // ✅ Verify MAC
-    const mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
-    if (mac !== reqMac) {
-      logger.warn('MAC mismatch - possible tampering!');
-      return { return_code: -1, return_message: 'Invalid MAC' };
+      // ✅ Verify MAC
+      const mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
+      if (mac !== reqMac) {
+        logger.warn('MAC mismatch - possible tampering!');
+        return { return_code: -1, return_message: 'Invalid MAC' };
+      }
+
+      // ✅ Find payment & update
+      const payment = await this.paymentRepo.findOne({
+        where: {
+          ticket: { id: ticketId },
+          method: PaymentMethod.ZALOPAY,
+        },
+        relations: ['ticket'],
+      });
+
+      if (!payment) {
+        logger.warn('Payment not found for ticketId:', ticketId);
+        return { return_code: -1, return_message: 'Payment not found' };
+      }
+
+      payment.status = PaymentStatus.COMPLETED;
+      await this.paymentRepo.save(payment);
+
+      payment.ticket.status = TicketStatus.BOOKED;
+      await this.ticketRepo.save(payment.ticket);
+
+      logger.debug('Payment and ticket updated successfully.');
+
+      await this.ticketService.ticketInfo(ticketId);
+      logger.debug('Send to mail successfully.');
+
+      return { return_code: 1, return_message: 'Success' };
+    } catch (err) {
+      logger.error('handleZaloPayCallback error:', err);
+      return { return_code: -1, return_message: 'Internal Server Error' };
     }
-
-    // ✅ Find payment & update
-    const payment = await this.paymentRepo.findOne({
-      where: {
-        ticket: { id: ticketId },
-        method: PaymentMethod.ZALOPAY,
-      },
-      relations: ['ticket'],
-    });
-
-    if (!payment) {
-      logger.warn('Payment not found for ticketId:', ticketId);
-      return { return_code: -1, return_message: 'Payment not found' };
-    }
-
-    payment.status = PaymentStatus.COMPLETED;
-    await this.paymentRepo.save(payment);
-
-    payment.ticket.status = TicketStatus.BOOKED;
-    await this.ticketRepo.save(payment.ticket);
-
-    logger.debug('Payment and ticket updated successfully.');
-    return { return_code: 1, return_message: 'Success' };
-  } catch (err) {
-    logger.error('handleZaloPayCallback error:', err);
-    return { return_code: -1, return_message: 'Internal Server Error' };
   }
-}
-
 
   /// mobile payment
   async createZaloPayPaymentMobile(ticketId: string) {

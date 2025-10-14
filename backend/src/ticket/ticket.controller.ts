@@ -46,6 +46,11 @@ export class TicketController {
     };
   }
 
+  @Get('info/:id')
+  async ticketInfo(@Param('id') id: string) {
+    return await this.ticketService.ticketInfo(id);
+  }
+
   @Get(':id')
   async getTicketDetail(@Param('id') id: string) {
     return await this.ticketService.getTicketDetail(id);

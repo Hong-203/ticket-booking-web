@@ -19,16 +19,32 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilterPaymentDto } from './dto/filter-payment.dto';
+import { RabbitProducer } from 'src/queues/rabbit.producer';
 
 @ApiTags('Payment')
 @ApiBearerAuth()
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(
+    private readonly paymentService: PaymentService,
+    private readonly rabbitProducer: RabbitProducer,
+  ) {}
+
+  // @Post('create-momo')
+  // async createMoMo(@Body() dto: CreatePaymentMoMoDto) {
+  //   // return this.paymentService.createMoMoPayment(dto);
+  //   return this.rabbitProducer.publishCreateMoMo(dto);
+  // }
 
   @Post('create-momo')
   async createMoMo(@Body() dto: CreatePaymentMoMoDto) {
-    return this.paymentService.createMoMoPayment(dto);
+    const momoResult = await this.paymentService.createMoMoPayment(dto);
+
+    // 2️⃣ Bắn queue để xử lý các tác vụ async (ghi log, lưu trạng thái pending, v.v.)
+    await this.rabbitProducer.publishCreateMoMo(dto);
+
+    // 3️⃣ Trả link thanh toán cho FE — để người dùng redirect
+    return momoResult;
   }
 
   @Post('create-momo-mobile')
@@ -36,12 +52,26 @@ export class PaymentController {
     return this.paymentService.createMoMoPaymentMobile(dto);
   }
 
+  // @Post('create-zalopay')
+  // async createZaloPay(@Body() dto: CreatePaymentZaloPayDto) {
+  //   const ticketId = dto.ticketId;
+  //   console.log('ticketId', ticketId);
+  //   // const result = await this.paymentService.createZaloPayPayment(ticketId);
+  //   const result = await this.rabbitProducer.publishCreateZaloPay(dto);
+  //   return result;
+  // }
+
   @Post('create-zalopay')
   async createZaloPay(@Body() dto: CreatePaymentZaloPayDto) {
     const ticketId = dto.ticketId;
-    console.log('ticketId', ticketId);
-    const result = await this.paymentService.createZaloPayPayment(ticketId);
-    return result;
+    // 1️⃣ Gọi ZaloPay thật để lấy order_url, zp_trans_token
+    const zaloResult = await this.paymentService.createZaloPayPayment(ticketId);
+
+    // 2️⃣ Bắn queue để xử lý các tác vụ async (ghi log, lưu trạng thái pending, v.v.)
+    await this.rabbitProducer.publishCreateZaloPay(dto);
+
+    // 3️⃣ Trả link thanh toán cho FE — để người dùng redirect
+    return zaloResult;
   }
 
   @Post('create-zalopay-mobile')

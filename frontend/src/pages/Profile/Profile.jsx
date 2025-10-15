@@ -86,7 +86,7 @@ const ProfilePage = () => {
     };
     dispatch(getMyPayments(filter));
   };
-
+  console.log("myTickets", myTickets);
   const listMyBooked = myTickets.tickets;
   const handleEditProfile = () => {
     setEditFormData({

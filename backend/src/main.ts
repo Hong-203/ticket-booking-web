@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { setupSwagger } from './config/setup-swagger';
 import { AllExceptionsFilter } from './filters/exception.filter';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -34,7 +35,6 @@ async function bootstrap() {
 
   setupSwagger(app);
 
-  // Render cung cấp PORT qua env
   const port = process.env.PORT || process.env.APP_PORT || 3000;
   await app.listen(port);
 
@@ -51,5 +51,6 @@ async function bootstrap() {
   logger.log(
     `📚 Swagger available at: ${serverMethod}://${serverHost}/${API_PREFIX}/documentation`,
   );
+  logger.log('🐇 RabbitMQ microservices started for Momo and Zalo queues');
 }
 bootstrap();

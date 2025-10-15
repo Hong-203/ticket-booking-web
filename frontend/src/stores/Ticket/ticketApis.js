@@ -53,7 +53,7 @@ const createTicket = (data) => async (dispatch) => {
       dispatch(getFailed(res.data.message));
     } else {
       dispatch(createSuccess(res.data));
-      return res.data;
+      return { success: true, data: res.data };
     }
   } catch (error) {
     dispatch(getError(error.message));

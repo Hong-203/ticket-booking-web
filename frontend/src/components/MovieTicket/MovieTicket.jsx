@@ -1,18 +1,18 @@
-import React from 'react'
-import { Card, Typography, Space, Divider, Tag, Rate } from 'antd'
+import React from "react";
+import { Card, Typography, Space, Divider, Tag, Rate } from "antd";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
   HomeOutlined,
-  VideoCameraOutlined
-} from '@ant-design/icons'
-import './MovieTicket.css'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { createBooking } from '../../stores/Seat/seatApis'
-import { createTicket } from '../../stores/Ticket/ticketApis'
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import "./MovieTicket.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createBooking } from "../../stores/Seat/seatApis";
+import { createTicket } from "../../stores/Ticket/ticketApis";
 
-const { Title, Text } = Typography
+const { Title, Text } = Typography;
 
 const MovieTicket = ({
   movieId,
@@ -21,55 +21,55 @@ const MovieTicket = ({
   selectedSeats,
   slug,
   movieInfo,
-  concessionCart
+  concessionCart,
 }) => {
-  console.log('concessionCart', concessionCart)
-  const ticketData = movieInfo
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  console.log("concessionCart", concessionCart);
+  const ticketData = movieInfo;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleBack = () => {
-    navigate(`/movie-show-time/${slug}`)
-  }
-  console.log('selectedSeats', selectedSeats)
-  console.log('movieInfo', movieInfo)
+    navigate(`/movie-show-time/${slug}`);
+  };
+  console.log("selectedSeats", selectedSeats);
+  console.log("movieInfo", movieInfo);
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price)
-  }
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const calculateTicketTotal = () => {
-    const basePrice = ticketData.showtime.price_per_seat
+    const basePrice = ticketData.showtime.price_per_seat;
 
     const ticketTotal = selectedSeats.reduce((total, seat) => {
-      const multiplier = seat.type === 'couple' ? 2.1 : 1
-      return total + basePrice * multiplier
-    }, 0)
+      const multiplier = seat.type === "couple" ? 2.1 : 1;
+      return total + basePrice * multiplier;
+    }, 0);
 
-    return ticketTotal
-  }
+    return ticketTotal;
+  };
 
   const calculateConcessionTotal = () => {
-    if (!concessionCart) return 0
+    if (!concessionCart) return 0;
 
     return Object.values(concessionCart).reduce((total, item) => {
-      return total + parseFloat(item.product.price) * item.quantity
-    }, 0)
-  }
+      return total + parseFloat(item.product.price) * item.quantity;
+    }, 0);
+  };
 
-  const ticketTotal = calculateTicketTotal()
-  const concessionTotal = calculateConcessionTotal()
-  const totalPrice = ticketTotal + concessionTotal
+  const ticketTotal = calculateTicketTotal();
+  const concessionTotal = calculateConcessionTotal();
+  const totalPrice = ticketTotal + concessionTotal;
 
   if (
     !movieInfo ||
@@ -78,7 +78,7 @@ const MovieTicket = ({
     !movieInfo.hall ||
     !movieInfo.hall.theatre
   ) {
-    return <div>Đang tải thông tin vé...</div>
+    return <div>Đang tải thông tin vé...</div>;
   }
 
   const getBookingData = (
@@ -90,60 +90,55 @@ const MovieTicket = ({
     // Tính tổng tiền của bắp nước
     const concessionTotal = concessionCart
       ? Object.values(concessionCart).reduce((total, item) => {
-          return total + parseFloat(item.product.price) * item.quantity
+          return total + parseFloat(item.product.price) * item.quantity;
         }, 0)
-      : 0
+      : 0;
 
     // Tạo danh sách item bắp nước
     const concessions = concessionCart
       ? Object.values(concessionCart).map((item) => ({
           item_id: item.product.id,
-          quantity: item.quantity
+          quantity: item.quantity,
         }))
-      : []
+      : [];
 
     // Tạo object dữ liệu cuối cùng
     return {
       seat_total_price: ticketTotal,
       concession_total_price: concessionTotal,
       seat_booking_ids: seat_booking_ids,
-      concessions
-    }
-  }
+      concessions,
+    };
+  };
 
   const handleBookingConfirm = async () => {
     const data = {
       seat_ids: selectedSeats.map((seat) => seat.id),
       movie_id: movieId,
       hall_id: hallId,
-      showtime_id: showtimeId
+      showtime_id: showtimeId,
+    };
+
+    const bookingData = await dispatch(createBooking(data));
+    if (bookingData.success) {
+      const seat_booking_ids = bookingData.data.map((b) => b.id);
+      const datas = getBookingData(
+        ticketTotal,
+        concessionCart,
+        selectedSeats,
+        seat_booking_ids
+      );
+      const ticketData = await dispatch(createTicket(datas));
+      if (ticketData.success) {
+        const ticketId = ticketData.data.id;
+        await navigate(`/payment/${ticketId}`);
+      }
     }
-
-    const bookingData = await dispatch(createBooking(data))
-    if (!bookingData) {
-      console.error('Booking failed.')
-      return
-    }
-
-    const seat_booking_ids = bookingData.map((b) => b.id)
-
-    const datas = getBookingData(
-      ticketTotal,
-      concessionCart,
-      selectedSeats,
-      seat_booking_ids
-    )
-
-    const ticketData = await dispatch(createTicket(datas))
-    console.log('ticketData', ticketData)
-    const ticketId = ticketData.id
-    navigate(`/payment/${ticketId}`)
-  }
+  };
 
   return (
     <div className="ticket-container">
       <Card className="movie-ticket" bordered={false}>
-        {/* Header Section */}
         <div className="ticket-header">
           <img
             src={ticketData.movie.image_path}
@@ -200,10 +195,10 @@ const MovieTicket = ({
             <div className="info-item">
               <HomeOutlined className="info-icon" />
               <Text className="info-text">
-                Ghế:{' '}
+                Ghế:{" "}
                 {selectedSeats.length > 0
-                  ? selectedSeats.map((seat) => seat.name).join(', ')
-                  : 'Chưa chọn'}
+                  ? selectedSeats.map((seat) => seat.name).join(", ")
+                  : "Chưa chọn"}
               </Text>
             </div>
             <div className="info-item">
@@ -221,8 +216,8 @@ const MovieTicket = ({
                   <div className="concession-info">
                     <Text strong>{item.product.name}</Text>
                     <div>
-                      <strong>{item.quantity}</strong> x{' '}
-                      {formatPrice(parseFloat(item.product.price))} ={' '}
+                      <strong>{item.quantity}</strong> x{" "}
+                      {formatPrice(parseFloat(item.product.price))} ={" "}
                       {formatPrice(
                         parseFloat(item.product.price) * item.quantity
                       )}
@@ -257,7 +252,7 @@ const MovieTicket = ({
               <strong>Mã vé:</strong>
             </div>
             <div>{ticketData.movie_id.slice(-8).toUpperCase()}</div>
-            <div style={{ marginTop: 4, fontSize: '11px' }}>
+            <div style={{ marginTop: 4, fontSize: "11px" }}>
               Cinezone Ticket
             </div>
           </div>
@@ -275,7 +270,7 @@ const MovieTicket = ({
         </div>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default MovieTicket
+export default MovieTicket;

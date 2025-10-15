@@ -13,6 +13,7 @@ import { Showtime } from 'src/showtimes/entities/showtimes.entity';
 import { User } from 'src/users/entities/user.entity';
 import { MailerService } from 'src/mail/mail.service';
 import { BarcodeService } from 'src/barcode/barcode.service';
+import { SeatBookingStatus } from 'src/constants';
 
 @Injectable()
 export class TicketService {
@@ -208,6 +209,24 @@ export class TicketService {
           }
         : null,
     };
+  }
+
+  async markSeatsByTicketId(ticketId: string): Promise<void> {
+    const seatBookings = await this.ticketSeatBookingRepository.find({
+      where: { ticket: { id: ticketId } },
+      relations: ['seatBooking'],
+    });
+
+    const seatBookingIds = seatBookings.map((tsb) => tsb.seatBooking.id);
+
+    if (seatBookingIds.length === 0) return;
+
+    await this.seatBookingRepository
+      .createQueryBuilder()
+      .update(SeatBooking)
+      .set({ status: SeatBookingStatus.Booked })
+      .whereInIds(seatBookingIds)
+      .execute();
   }
 
   async getTicketsByUser(userId: string): Promise<any> {
@@ -521,6 +540,7 @@ export class TicketService {
       code: barcodeUrl.code,
       ticketId: ticketId,
     });
+    await this.markSeatsByTicketId(ticketId);
     return {
       message:
         'Xác nhận đặt vé Cinezone thành công đã được gửi đến email của bạn',

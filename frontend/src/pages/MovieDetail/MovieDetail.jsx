@@ -5,6 +5,7 @@ import { getMovieBySlug } from '../../stores/Movie/movieApis'
 import { Tag, Typography, Spin, Row, Col, Button } from 'antd' // Removed Descriptions, Image, Divider
 import './MovieDetail.css'
 import bgDetail from '../../assets/image.png'
+import { toast } from 'react-toastify'
 
 const { Title, Paragraph, Text } = Typography
 
@@ -14,7 +15,8 @@ const MovieDetail = () => {
   const { slug } = useParams()
   const movieDetail = useSelector((state) => state.movie.movieDetails)
   const [loading, setLoading] = useState(true)
-
+    const storedUser = JSON.parse(localStorage.getItem('user'))
+ const currentUserId = storedUser && storedUser.id
   useEffect(() => {
     dispatch(getMovieBySlug(slug)).finally(() => setLoading(false))
   }, [dispatch, slug])
@@ -24,7 +26,15 @@ const MovieDetail = () => {
   }
 
   const handleByShownIn = () => {
-    navigate(`/movie-show-time/${slug}`)
+    const storedUser = JSON.parse(localStorage.getItem('user'))
+    const currentUserId = storedUser && storedUser.id
+
+    if (!currentUserId) {
+      toast.error('Vui lòng đăng nhập trước khi đặt vé!')
+      navigate('/login')
+    } else {
+      navigate(`/movie-show-time/${slug}`)
+    }
   }
 
   const {

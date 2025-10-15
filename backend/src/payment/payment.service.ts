@@ -20,6 +20,9 @@ import {
   CreatePaymentZaloPayDto,
 } from './dto/create-momo.dto';
 import { console } from 'inspector';
+import { SeatBooking } from 'src/seat/entities/seat_booking.entity';
+import { TicketService } from 'src/ticket/ticket.service';
+import { FilterPaymentDto } from './dto/filter-payment.dto';
 const logger = new Logger('PaymentService');
 
 @Injectable()
@@ -29,6 +32,10 @@ export class PaymentService {
     private paymentRepo: Repository<Payment>,
     @InjectRepository(Ticket)
     private ticketRepo: Repository<Ticket>,
+    @InjectRepository(SeatBooking)
+    private readonly seatBookingRepo: Repository<SeatBooking>,
+
+    private readonly ticketService: TicketService,
   ) {}
 
   async createMoMoPayment(dto: CreatePaymentMoMoDto) {
@@ -57,7 +64,7 @@ export class PaymentService {
       throw new Error('MOMO_SECRET_KEY is not defined');
     }
 
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=captureWallet`;
+    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=payWithMethod`;
 
     const signature = crypto
       .createHmac('sha256', secretKey)
@@ -74,7 +81,7 @@ export class PaymentService {
       redirectUrl,
       ipnUrl,
       extraData: '',
-      requestType: 'captureWallet',
+      requestType: 'payWithMethod',
       signature,
       lang: 'vi',
     };
@@ -210,6 +217,9 @@ export class PaymentService {
       await this.ticketRepo.save(payment.ticket);
     }
 
+    await this.ticketService.ticketInfo(ticketId);
+    logger.debug('Send to mail successfully.');
+
     return { message: 'IPN processed successfully' };
   }
 
@@ -217,40 +227,32 @@ export class PaymentService {
     try {
       logger.debug('Received body:', JSON.stringify(body));
 
-      const embedData = JSON.parse(body.data.embed_data);
+      // ✅ Parse data từ chuỗi JSON sang object
+      const data = JSON.parse(body.data);
+
+      // ✅ Lấy embed_data trong object đã parse
+      const embedData = JSON.parse(data.embed_data);
       const ticketId = embedData.ticketId;
-      const dataStr = JSON.stringify(body.data);
+
+      const dataStr = body.data; // chuỗi gốc (chưa stringify thêm lần nữa)
       const reqMac = body.mac;
       const key2 = process.env.ZALO_KEY2;
 
       logger.debug('Parsed embedData:', embedData);
       logger.debug('Extracted ticketId:', ticketId);
-      logger.debug('Generated dataStr:', dataStr);
       logger.debug('Received mac from ZaloPay:', reqMac);
       logger.debug('Loaded key2 from env:', !!key2);
 
       if (!key2) throw new Error('ZALO_KEY2 is missing');
 
-      // Verify MAC
+      // ✅ Verify MAC
       const mac = CryptoJS.HmacSHA256(dataStr, key2).toString();
-      logger.debug('Generated mac from dataStr:', mac);
-
       if (mac !== reqMac) {
         logger.warn('MAC mismatch - possible tampering!');
         return { return_code: -1, return_message: 'Invalid MAC' };
       }
 
-      // Parse data again (redundant, can reuse body.data directly)
-      let data: any;
-      try {
-        data = JSON.parse(dataStr);
-        logger.debug('Parsed data:', data);
-      } catch (e) {
-        logger.error('Failed to parse dataStr:', e);
-        return { return_code: -1, return_message: 'Invalid data format' };
-      }
-
-      // Find payment
+      // ✅ Find payment & update
       const payment = await this.paymentRepo.findOne({
         where: {
           ticket: { id: ticketId },
@@ -264,17 +266,16 @@ export class PaymentService {
         return { return_code: -1, return_message: 'Payment not found' };
       }
 
-      logger.debug('Payment found:', payment);
-
-      // Update payment status
       payment.status = PaymentStatus.COMPLETED;
       await this.paymentRepo.save(payment);
-      logger.debug('Updated payment status to COMPLETED');
 
-      // Update ticket status
       payment.ticket.status = TicketStatus.BOOKED;
       await this.ticketRepo.save(payment.ticket);
-      logger.debug('Updated ticket status to BOOKED');
+
+      logger.debug('Payment and ticket updated successfully.');
+
+      await this.ticketService.ticketInfo(ticketId);
+      logger.debug('Send to mail successfully.');
 
       return { return_code: 1, return_message: 'Success' };
     } catch (err) {
@@ -407,7 +408,7 @@ export class PaymentService {
       throw new Error('MOMO_SECRET_KEY is not defined');
     }
 
-    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=captureWallet`;
+    const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=Thanh toan ve xem phim&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=payWithMethod`;
 
     const signature = crypto
       .createHmac('sha256', secretKey)
@@ -424,7 +425,7 @@ export class PaymentService {
       redirectUrl,
       ipnUrl,
       extraData: '',
-      requestType: 'captureWallet',
+      requestType: 'payWithMethod',
       signature,
       lang: 'vi',
     };
@@ -456,5 +457,87 @@ export class PaymentService {
       resultCode: data.resultCode,
       message: data.message,
     };
+  }
+
+  async getPayments(filter: FilterPaymentDto): Promise<Payment[]> {
+    const query = this.paymentRepo
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.user', 'user')
+      .leftJoinAndSelect('payment.ticket', 'ticket');
+
+    if (filter.userId) {
+      query.andWhere('user.id = :userId', { userId: filter.userId });
+    }
+
+    if (filter.status) {
+      query.andWhere('payment.status = :status', { status: filter.status });
+    }
+
+    if (filter.method) {
+      query.andWhere('payment.method = :method', { method: filter.method });
+    }
+
+    if (filter.email) {
+      query.andWhere('payment.email LIKE :email', {
+        email: `%${filter.email}%`,
+      });
+    }
+
+    if (filter.startDate) {
+      query.andWhere('payment.created_at >= :startDate', {
+        startDate: filter.startDate,
+      });
+    }
+
+    if (filter.endDate) {
+      query.andWhere('payment.created_at <= :endDate', {
+        endDate: filter.endDate,
+      });
+    }
+
+    query.orderBy('payment.created_at', 'DESC');
+
+    return query.getMany();
+  }
+
+  async getPaymentsByUser(
+    userId: string,
+    filter: FilterPaymentDto,
+  ): Promise<Payment[]> {
+    const query = this.paymentRepo
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.user', 'user')
+      .leftJoinAndSelect('payment.ticket', 'ticket')
+      .where('user.id = :userId', { userId });
+
+    if (filter.status) {
+      query.andWhere('payment.status = :status', { status: filter.status });
+    }
+
+    if (filter.method) {
+      query.andWhere('payment.method = :method', { method: filter.method });
+    }
+
+    if (filter.email) {
+      query.andWhere('payment.email LIKE :email', {
+        email: `%${filter.email}%`,
+      });
+    }
+
+    if (filter.startDate) {
+      query.andWhere('payment.created_at >= :startDate', {
+        startDate: filter.startDate,
+      });
+    }
+
+    if (filter.endDate) {
+      query.andWhere('payment.created_at <= :endDate', {
+        endDate: filter.endDate,
+      });
+    }
+
+    query.orderBy('payment.created_at', 'DESC');
+
+    return query.getMany();
   }
 }

@@ -7,15 +7,18 @@ import {
   Post,
   Query,
   Req,
+  Request,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { Request } from 'express';
 import {
   CreatePaymentMoMoDto,
   CreatePaymentZaloPayDto,
 } from './dto/create-momo.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { FilterPaymentDto } from './dto/filter-payment.dto';
 
 @ApiTags('Payment')
 @ApiBearerAuth()
@@ -63,5 +66,18 @@ export class PaymentController {
   @Get('zalopay-callback')
   handleZaloPayRedirect(@Query() query: any, @Res() res: Response) {
     console.log('ZaloPay redirect query:', query);
+  }
+
+  @Get()
+  // @UseGuards(AuthGuard('jwt'))
+  getAll(@Query() filter: FilterPaymentDto) {
+    return this.paymentService.getPayments(filter);
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard('jwt'))
+  getMyPayments(@Request() req, @Query() filter: FilterPaymentDto) {
+    const userId = req.user.userId;
+    return this.paymentService.getPaymentsByUser(userId, filter);
   }
 }

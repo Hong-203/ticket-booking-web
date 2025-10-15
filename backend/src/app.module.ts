@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ConcessionItemsModule } from './concession-item/concession-item.module';
 import { TicketModule } from './ticket/ticket.module';
 import { PaymentModule } from './payment/payment.module';
+import { BarcodeModule } from './barcode/barcode.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PaymentModule } from './payment/payment.module';
     ConcessionItemsModule,
     TicketModule,
     PaymentModule,
+    BarcodeModule,
   ],
 })
 export class AppModule {}

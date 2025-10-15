@@ -38,12 +38,18 @@ export class TicketController {
   @UseGuards(AuthGuard('jwt'))
   async getMyTickets(@Request() req) {
     const userId = req.user.userId;
+    console.log('userId', userId);
     const tickets = await this.ticketService.getTicketsByUser(userId);
 
     return {
       message: 'Lấy danh sách vé thành công',
       data: tickets,
     };
+  }
+
+  @Get('info/:id')
+  async ticketInfo(@Param('id') id: string) {
+    return await this.ticketService.ticketInfo(id);
   }
 
   @Get(':id')

@@ -14,6 +14,10 @@ import { Showtime } from 'src/showtimes/entities/showtimes.entity';
 import { BookingCron } from 'src/schedule/schedule.service';
 import { Payment } from 'src/payment/entities/payment.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
+import { MailerService } from 'src/mail/mail.service';
+import { BarcodeService } from 'src/barcode/barcode.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { BarcodeModule } from 'src/barcode/barcode.module';
 
 @Module({
   imports: [
@@ -30,8 +34,10 @@ import { Seat } from 'src/seat/entities/seat.entity';
       Payment,
       Seat,
     ]),
+    BarcodeModule,
   ],
-  providers: [TicketService, BookingCron],
+  providers: [TicketService, BookingCron, MailerService, CloudinaryService],
   controllers: [TicketController],
+  exports: [TicketService],
 })
 export class TicketModule {}

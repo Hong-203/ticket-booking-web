@@ -154,6 +154,7 @@ export class TicketService {
         'seatBookings.seatBooking.seat',
         'concessions',
         'concessions.item',
+        'barcode',
       ],
     });
 
@@ -167,7 +168,10 @@ export class TicketService {
       this.movieRepository.findOne({
         where: { id: firstSeatBooking?.movie_id },
       }),
-      this.hallRepository.findOne({ where: { id: firstSeatBooking?.hall_id } }),
+      this.hallRepository.findOne({
+        where: { id: firstSeatBooking.hall_id },
+        relations: ['theatre'],
+      }),
       this.shownTimeRepository.findOne({
         where: { id: firstSeatBooking?.showtime_id },
       }),
@@ -195,21 +199,36 @@ export class TicketService {
         quantity: c.quantity,
         total_price: c.total_price,
       })),
+      barcode: ticket.barcode
+        ? {
+            id: ticket.barcode.id,
+            barcodeUrl: ticket.barcode.barcodeUrl,
+            code: ticket.barcode.code,
+            status: ticket.barcode.status,
+          }
+        : null,
     };
   }
 
-  async getTicketsByUser(userId: string): Promise<any[]> {
-    const tickets = await this.ticketRepository.find({
-      where: { user: { id: userId } },
-      select: ['id'],
-      order: { created_at: 'DESC' },
-    });
-
+  async getTicketsByUser(userId: string): Promise<any> {
+    const tickets = await this.ticketRepository
+      .createQueryBuilder('ticket')
+      .leftJoinAndSelect('ticket.user', 'user')
+      .where('ticket.user_id = :userId', { userId })
+      .orderBy('ticket.created_at', 'DESC')
+      .getMany();
     const ticketDetails = await Promise.all(
       tickets.map((ticket) => this.getTicketDetail(ticket.id)),
     );
-
-    return ticketDetails;
+    const totalSpent = tickets.reduce((sum, ticket) => {
+      return sum + Number(ticket.total_price); // chuyển string/decimal sang number
+    }, 0);
+    const totalTickets = tickets.length;
+    return {
+      tickets: ticketDetails,
+      totalSpent,
+      totalTickets,
+    };
   }
 
   async ticketInfo(ticketId: string): Promise<any> {
@@ -240,7 +259,10 @@ export class TicketService {
       this.movieRepository.findOne({
         where: { id: firstSeatBooking.movie_id },
       }),
-      this.hallRepository.findOne({ where: { id: firstSeatBooking.hall_id } }),
+      this.hallRepository.findOne({
+        where: { id: firstSeatBooking.hall_id },
+        relations: ['theatre'],
+      }),
       this.shownTimeRepository.findOne({
         where: { id: firstSeatBooking.showtime_id },
       }),
@@ -277,7 +299,6 @@ export class TicketService {
     const barcodeUrl =
       await this.barcodeService.generateBarcode(barcodePayload);
 
-    // 4️⃣ Chuẩn bị dữ liệu vé
     const seatNames = ticket.seatBookings
       .map((tsb) => tsb.seatBooking?.seat?.name)
       .filter(Boolean)
@@ -378,7 +399,7 @@ export class TicketService {
                         <strong style="color: #555555; font-size: 14px;">🎭 Phòng chiếu:</strong>
                       </td>
                       <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; text-align: right;">
-                        <span style="color: #333333; font-size: 14px;">${hall.name}</span>
+                        <span style="color: #333333; font-size: 14px;">${hall.name} - ${hall.theatre.name}</span>
                       </td>
                     </tr>
                     <tr>
@@ -410,7 +431,7 @@ export class TicketService {
                         <strong style="color: #555555; font-size: 14px;">📍 Địa chỉ:</strong>
                       </td>
                       <td style="padding: 12px 0; border-bottom: 1px solid #eeeeee; text-align: right;">
-                        <span style="color: #333333; font-size: 14px;">${hall.theatre || 'Đang cập nhật'}</span>
+                        <span style="color: #333333; font-size: 14px;">${hall.theatre.locationDetails || 'Đang cập nhật'}</span>
                       </td>
                     </tr>
                     <tr>
@@ -441,7 +462,7 @@ export class TicketService {
                     <tr>
                       <td style="padding: 8px 0;">
                         <span style="color: #666666; font-size: 14px;">📞 Số điện thoại:</span>
-                        <strong style="color: #333333; font-size: 14px; margin-left: 10px;">${user.phone_number}</strong>
+                        <strong style="color: #333333; font-size: 14px; margin-left: 10px;">${user.phone_number || ' '}</strong>
                       </td>
                     </tr>
                     <tr>
@@ -464,7 +485,7 @@ export class TicketService {
                     Trong trường hợp cần hỗ trợ, vui lòng dùng chính số điện thoại đăng ký tài khoản để liên hệ tổng đài Cinezone.
                   </p>
                   <p style="margin: 10px 0 0 0; color: #333333; font-size: 16px;">
-                    <strong>Hotline: <a href="tel:1900545441" style="color: #667eea; text-decoration: none;">1900 54 54 41</a></strong>
+                    <strong>Hotline: <a href="tel:1900545441" style="color: #667eea; text-decoration: none;">1900 99 99 99</a></strong>
                   </p>
                 </td>
               </tr>
@@ -473,7 +494,7 @@ export class TicketService {
               <tr>
                 <td style="background-color: #333333; padding: 20px; text-align: center;">
                   <p style="margin: 0; color: #ffffff; font-size: 13px;">
-                    © 2024 Cinezone. Hệ thống đặt vé xem phim trực tuyến.
+                    © 2025 Cinezone. Hệ thống đặt vé xem phim trực tuyến.
                   </p>
                   <p style="margin: 10px 0 0 0; color: #999999; font-size: 12px;">
                     Email này được gửi tự động, vui lòng không trả lời email này.
@@ -494,6 +515,12 @@ export class TicketService {
       `Xác nhận đặt vé Cinezone thành công - Mã giao dịch ${ticket.id}`,
       emailContent,
     );
+
+    await this.barcodeService.create({
+      barcodeUrl: barcodeUrl.barcode_url,
+      code: barcodeUrl.code,
+      ticketId: ticketId,
+    });
     return {
       message:
         'Xác nhận đặt vé Cinezone thành công đã được gửi đến email của bạn',

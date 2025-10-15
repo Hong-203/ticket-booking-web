@@ -1,11 +1,24 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bwipjs from 'bwip-js';
 import * as crypto from 'crypto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { Barcode } from './entities/barcode.entity';
+import { CreateBarcodeDto } from './dto/create-barcode.dto';
+import { UpdateBarcodeStatusDto } from './dto/update-barcode.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BarcodeService {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
+  constructor(
+    private readonly cloudinaryService: CloudinaryService,
+    @InjectRepository(Barcode)
+    private readonly barcodeRepository: Repository<Barcode>,
+  ) {}
 
   async generateBarcode(
     data: any,
@@ -44,5 +57,45 @@ export class BarcodeService {
       console.error('❌ Lỗi khi tạo barcode:', error);
       throw new BadRequestException('Không thể tạo mã barcode');
     }
+  }
+
+  async create(createDto: CreateBarcodeDto): Promise<Barcode> {
+    const barcode = this.barcodeRepository.create({
+      barcodeUrl: createDto.barcodeUrl,
+      code: createDto.code,
+      ticket: createDto.ticketId
+        ? ({ id: createDto.ticketId } as any)
+        : undefined,
+    });
+    return await this.barcodeRepository.save(barcode);
+  }
+
+  // 🔵 FIND ALL
+  async findAll(): Promise<Barcode[]> {
+    return await this.barcodeRepository.find();
+  }
+
+  // 🟣 FIND ONE
+  async findOne(id: string): Promise<Barcode> {
+    const barcode = await this.barcodeRepository.findOne({ where: { id } });
+    if (!barcode) throw new NotFoundException('Barcode not found');
+    return barcode;
+  }
+
+  // 🟠 UPDATE STATUS
+  async updateStatus(
+    id: string,
+    updateDto: UpdateBarcodeStatusDto,
+  ): Promise<Barcode> {
+    const barcode = await this.findOne(id);
+    barcode.status = updateDto.status;
+    return await this.barcodeRepository.save(barcode);
+  }
+
+  // 🔴 DELETE
+  async remove(id: string): Promise<{ message: string }> {
+    const barcode = await this.findOne(id);
+    await this.barcodeRepository.remove(barcode);
+    return { message: 'Barcode deleted successfully' };
   }
 }

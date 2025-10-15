@@ -540,4 +540,14 @@ export class PaymentService {
 
     return query.getMany();
   }
+
+  async savePendingTransaction(ticketId: string) {
+    const ticket = await this.ticketRepo.findOne({ where: { id: ticketId } });
+    if (!ticket) {
+      return;
+    }
+
+    ticket.status = TicketStatus.PENDING;
+    await this.ticketRepo.save(ticket);
+  }
 }

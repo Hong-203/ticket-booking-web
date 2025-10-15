@@ -22,6 +22,7 @@ import {
 import { console } from 'inspector';
 import { SeatBooking } from 'src/seat/entities/seat_booking.entity';
 import { TicketService } from 'src/ticket/ticket.service';
+import { FilterPaymentDto } from './dto/filter-payment.dto';
 const logger = new Logger('PaymentService');
 
 @Injectable()
@@ -456,5 +457,87 @@ export class PaymentService {
       resultCode: data.resultCode,
       message: data.message,
     };
+  }
+
+  async getPayments(filter: FilterPaymentDto): Promise<Payment[]> {
+    const query = this.paymentRepo
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.user', 'user')
+      .leftJoinAndSelect('payment.ticket', 'ticket');
+
+    if (filter.userId) {
+      query.andWhere('user.id = :userId', { userId: filter.userId });
+    }
+
+    if (filter.status) {
+      query.andWhere('payment.status = :status', { status: filter.status });
+    }
+
+    if (filter.method) {
+      query.andWhere('payment.method = :method', { method: filter.method });
+    }
+
+    if (filter.email) {
+      query.andWhere('payment.email LIKE :email', {
+        email: `%${filter.email}%`,
+      });
+    }
+
+    if (filter.startDate) {
+      query.andWhere('payment.created_at >= :startDate', {
+        startDate: filter.startDate,
+      });
+    }
+
+    if (filter.endDate) {
+      query.andWhere('payment.created_at <= :endDate', {
+        endDate: filter.endDate,
+      });
+    }
+
+    query.orderBy('payment.created_at', 'DESC');
+
+    return query.getMany();
+  }
+
+  async getPaymentsByUser(
+    userId: string,
+    filter: FilterPaymentDto,
+  ): Promise<Payment[]> {
+    const query = this.paymentRepo
+      .createQueryBuilder('payment')
+      .leftJoinAndSelect('payment.user', 'user')
+      .leftJoinAndSelect('payment.ticket', 'ticket')
+      .where('user.id = :userId', { userId });
+
+    if (filter.status) {
+      query.andWhere('payment.status = :status', { status: filter.status });
+    }
+
+    if (filter.method) {
+      query.andWhere('payment.method = :method', { method: filter.method });
+    }
+
+    if (filter.email) {
+      query.andWhere('payment.email LIKE :email', {
+        email: `%${filter.email}%`,
+      });
+    }
+
+    if (filter.startDate) {
+      query.andWhere('payment.created_at >= :startDate', {
+        startDate: filter.startDate,
+      });
+    }
+
+    if (filter.endDate) {
+      query.andWhere('payment.created_at <= :endDate', {
+        endDate: filter.endDate,
+      });
+    }
+
+    query.orderBy('payment.created_at', 'DESC');
+
+    return query.getMany();
   }
 }

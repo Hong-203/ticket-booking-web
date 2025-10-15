@@ -17,6 +17,7 @@ import { Seat } from 'src/seat/entities/seat.entity';
 import { MailerService } from 'src/mail/mail.service';
 import { BarcodeService } from 'src/barcode/barcode.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { BarcodeModule } from 'src/barcode/barcode.module';
 
 @Module({
   imports: [
@@ -33,14 +34,9 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
       Payment,
       Seat,
     ]),
+    BarcodeModule,
   ],
-  providers: [
-    TicketService,
-    BookingCron,
-    MailerService,
-    BarcodeService,
-    CloudinaryService,
-  ],
+  providers: [TicketService, BookingCron, MailerService, CloudinaryService],
   controllers: [TicketController],
   exports: [TicketService],
 })

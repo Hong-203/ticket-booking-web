@@ -6,12 +6,14 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { TicketSeatBooking } from './TicketSeatBooking.entity';
 import { TicketConcession } from './TicketConcession.entity';
 import { TicketStatus } from 'src/constants';
+import { Barcode } from 'src/barcode/entities/barcode.entity';
 
 @Entity('ticket')
 export class Ticket {
@@ -54,4 +56,7 @@ export class Ticket {
 
   @OneToMany(() => TicketConcession, (tc) => tc.ticket, { cascade: true })
   concessions: TicketConcession[];
+
+  @OneToOne(() => Barcode, (barcode) => barcode.ticket, { cascade: true })
+  barcode: Barcode;
 }

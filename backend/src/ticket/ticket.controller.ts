@@ -38,6 +38,7 @@ export class TicketController {
   @UseGuards(AuthGuard('jwt'))
   async getMyTickets(@Request() req) {
     const userId = req.user.userId;
+    console.log('userId', userId);
     const tickets = await this.ticketService.getTicketsByUser(userId);
 
     return {

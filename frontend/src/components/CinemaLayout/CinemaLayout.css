@@ -176,7 +176,7 @@
 }
 
 .seat.couple::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -184,6 +184,26 @@
   width: 2px;
   height: 60%;
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* 💎 Ghế VIP */
+.seat.vip.empty {
+  background-color: #d0348a; /* vàng nhạt */
+  border: 1px solid #facc15;
+}
+
+.seat.vip.pending {
+  background: linear-gradient(135deg, #ffa726, #fb8c00); /* Cam đậm */
+  /* border: 2px solid #ef6c00; */
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 6px #ef6c00;
+}
+
+.seat.vip.booked {
+  background: linear-gradient(135deg, #e53935, #b71c1c); /* Đỏ đậm */
+  /* border: 2px solid #b71c1c; */
+  cursor: not-allowed;
+  box-shadow: 0 0 4px #b71c1c;
 }
 
 /* Trạng thái ghế đơn */
@@ -215,17 +235,17 @@
 }
 
 .seat.couple.pending {
-  background: linear-gradient(135deg, #ff7043, #e64a19); /* Cam đỏ rực */
-  /* border: 2px solid #bf360c; */
+  background: linear-gradient(135deg, #ffa726, #fb8c00); /* Cam đậm */
+  /* border: 2px solid #ef6c00; */
   animation: pulse 1.5s infinite;
-  box-shadow: 0 0 6px #e64a19;
+  box-shadow: 0 0 6px #ef6c00;
 }
 
 .seat.couple.booked {
-  background: linear-gradient(135deg, #8e24aa, #4a148c); /* Tím đậm */
-  /* border: 2px solid #4a148c; */
+  background: linear-gradient(135deg, #e53935, #b71c1c); /* Đỏ đậm */
+  /* border: 2px solid #b71c1c; */
   cursor: not-allowed;
-  box-shadow: 0 0 4px #4a148c;
+  box-shadow: 0 0 4px #b71c1c;
 }
 
 /* Animation */

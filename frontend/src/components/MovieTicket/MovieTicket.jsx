@@ -52,7 +52,11 @@ const MovieTicket = ({
     const basePrice = ticketData.showtime.price_per_seat;
 
     const ticketTotal = selectedSeats.reduce((total, seat) => {
-      const multiplier = seat.type === "couple" ? 2.1 : 1;
+      let multiplier = 1;
+
+      if (seat.type === "vip") multiplier = 1.25;
+      else if (seat.type === "couple") multiplier = 2.1;
+
       return total + basePrice * multiplier;
     }, 0);
 

@@ -10,6 +10,8 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ContainerFilled,
+  HomeOutlined,
 } from "@ant-design/icons";
 import "./AdminPageHome.css";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
@@ -22,6 +24,7 @@ import AdminMovie from "../AdminMovie/AdminMovie";
 import AdminShowin from "../AdminShownIn/AdminShowin";
 import Dashboard from "../Dashboard/Dashboard";
 const { Header, Sider, Content } = Layout;
+import logo from "../../../assets/Logo_CineZone_1.png";
 
 const AdminPageHome = () => {
   const navigate = useNavigate();
@@ -61,27 +64,29 @@ const AdminPageHome = () => {
       case "homepage":
         navigate("/");
       default:
-        return <h2>Chào mừng đến trang Admin</h2>;
+        return <Dashboard />;
     }
   };
   //AdminShowtime
   return (
     <Layout className="admin-layout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="ad-logo">{user.name}</div>
+        {/* <div className="ad-logo"> */}
+        {/* <img className="logo-web-ad" src={logo} alt="CineZone Logo" /> */}
+        {/* </div> */}
         <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["articles"]}
           onClick={(e) => setSelectedKey(e.key)}
         >
-          <Menu.Item key="homepage" icon={<FileTextOutlined />}>
+          <Menu.Item key="homepage" icon={<HomeOutlined />}>
             Trang chủ
           </Menu.Item>
           <Menu.Item key="dashboard" icon={<FileTextOutlined />}>
             Thống kê
           </Menu.Item>
-          <Menu.Item key="movie" icon={<FileTextOutlined />}>
+          <Menu.Item key="movie" icon={<ContainerFilled />}>
             Movie
           </Menu.Item>
           <Menu.Item key="shownin" icon={<CommentOutlined />}>
@@ -122,7 +127,9 @@ const AdminPageHome = () => {
             onClick={() => setCollapsed(!collapsed)}
             style={{ fontSize: "18px", width: 48, height: 48 }}
           />
-          <h1>Admin Dashboard</h1>
+          <h1>
+            <img className="logo-web-ad" src={logo} alt="CineZone Logo" />
+          </h1>
         </Header>
         <Content className="admin-content">{renderContent()}</Content>
       </Layout>

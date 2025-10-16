@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Layout, Menu, Button } from 'antd'
+import React, { useState } from "react";
+import { Layout, Menu, Button } from "antd";
 import {
   FileTextOutlined,
   CommentOutlined,
@@ -9,73 +9,84 @@ import {
   UnorderedListOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
-} from '@ant-design/icons'
-import './AdminPageHome.css'
-import { useNavigate, Outlet, useLocation } from 'react-router-dom'
-import AdminAccount from '../AdminAccount/AdminAccount'
-import AdminTheatre from '../AdminTheatre/AdminTheatre'
-import AdminFeature from '../AdminFeature/AdminFeature'
-import AdminHall from '../AdminHall/AdminHall'
-import AdminShowtime from '../AdminShowtime/AdminShowtime'
-import AdminMovie from '../AdminMovie/AdminMovie'
-import AdminShowin from '../AdminShownIn/AdminShowin'
-const { Header, Sider, Content } = Layout
+  MenuUnfoldOutlined,
+  ContainerFilled,
+  HomeOutlined,
+} from "@ant-design/icons";
+import "./AdminPageHome.css";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import AdminAccount from "../AdminAccount/AdminAccount";
+import AdminTheatre from "../AdminTheatre/AdminTheatre";
+import AdminFeature from "../AdminFeature/AdminFeature";
+import AdminHall from "../AdminHall/AdminHall";
+import AdminShowtime from "../AdminShowtime/AdminShowtime";
+import AdminMovie from "../AdminMovie/AdminMovie";
+import AdminShowin from "../AdminShownIn/AdminShowin";
+import Dashboard from "../Dashboard/Dashboard";
+const { Header, Sider, Content } = Layout;
+import logo from "../../../assets/Logo_CineZone_1.png";
 
 const AdminPageHome = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [collapsed, setCollapsed] = useState(false)
-  const [selectedKey, setSelectedKey] = useState('articles')
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedKey, setSelectedKey] = useState("articles");
+  const user = JSON.parse(localStorage.getItem("user"));
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/')
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
   const renderContent = () => {
     switch (selectedKey) {
-      case 'movie':
-        return <AdminMovie />
-      case 'shownin':
-        return <AdminShowin />
-      case 'users':
-        return <AdminAccount />
-      case 'theatre':
-        return <AdminTheatre />
-      case 'feature':
-        return <AdminFeature />
-      case 'hall':
-        return <AdminHall />
-      case 'showtime':
-        return <AdminShowtime />
-      case 'categories':
-        return
-      case 'logout':
-        navigate('/')
-        return null
-      case 'homepage':
-        navigate('/')
+      case "dashboard":
+        return <Dashboard />;
+      case "movie":
+        return <AdminMovie />;
+      case "shownin":
+        return <AdminShowin />;
+      case "users":
+        return <AdminAccount />;
+      case "theatre":
+        return <AdminTheatre />;
+      case "feature":
+        return <AdminFeature />;
+      case "hall":
+        return <AdminHall />;
+      case "showtime":
+        return <AdminShowtime />;
+      case "categories":
+        return;
+      case "logout":
+        navigate("/");
+        return null;
+      case "homepage":
+        navigate("/");
       default:
-        return <h2>Chào mừng đến trang Admin</h2>
+        return <Dashboard />;
     }
-  }
+  };
   //AdminShowtime
   return (
     <Layout className="admin-layout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="ad-logo">{user.name}</div>
+        {/* <div className="ad-logo"> */}
+        {/* <img className="logo-web-ad" src={logo} alt="CineZone Logo" /> */}
+        {/* </div> */}
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['articles']}
+          defaultSelectedKeys={["articles"]}
           onClick={(e) => setSelectedKey(e.key)}
         >
-          <Menu.Item key="homepage" icon={<FileTextOutlined />}>
+          <Menu.Item key="homepage" icon={<HomeOutlined />}>
             Trang chủ
           </Menu.Item>
-          <Menu.Item key="movie" icon={<FileTextOutlined />}>
+          <Menu.Item key="dashboard" icon={<FileTextOutlined />}>
+            Thống kê
+          </Menu.Item>
+          <Menu.Item key="movie" icon={<ContainerFilled />}>
             Movie
           </Menu.Item>
           <Menu.Item key="shownin" icon={<CommentOutlined />}>
@@ -114,14 +125,16 @@ const AdminPageHome = () => {
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: '18px', width: 48, height: 48 }}
+            style={{ fontSize: "18px", width: 48, height: 48 }}
           />
-          <h1>Admin Dashboard</h1>
+          <h1>
+            <img className="logo-web-ad" src={logo} alt="CineZone Logo" />
+          </h1>
         </Header>
         <Content className="admin-content">{renderContent()}</Content>
       </Layout>
     </Layout>
-  )
-}
+  );
+};
 
-export default AdminPageHome
+export default AdminPageHome;

@@ -15,6 +15,7 @@
   backdrop-filter: blur(8px);
   padding: 1rem;
   /* border-radius: 20px; */
+  border-bottom: #c5d9cd solid 1px;
 }
 
 .btn-menu {
@@ -54,18 +55,20 @@
   color: #0af35e;
 }
 .nav-items {
-  position: absolute;
-  top: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   list-style: none;
   font-size: 1rem;
   gap: 1.8rem;
   align-items: center;
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
+  margin: 0;
+  padding: 0;
+  /* remove position absolute */
+  /* position: absolute; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
 }
+
 .nav-item:link,
 .nav-item:visited {
   text-decoration: none;
@@ -168,6 +171,6 @@
   background-color: #ff4b6b;
 }
 img.logo-web-my {
-  width: 80px;
+  width: 170px;
   height: auto;
 }

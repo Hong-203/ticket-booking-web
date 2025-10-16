@@ -17,6 +17,7 @@ import { ConcessionItemsModule } from './concession-item/concession-item.module'
 import { TicketModule } from './ticket/ticket.module';
 import { PaymentModule } from './payment/payment.module';
 import { BarcodeModule } from './barcode/barcode.module';
+import { StaticsModule } from './statics/statics.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { BarcodeModule } from './barcode/barcode.module';
     TicketModule,
     PaymentModule,
     BarcodeModule,
+    StaticsModule,
   ],
 })
 export class AppModule {}

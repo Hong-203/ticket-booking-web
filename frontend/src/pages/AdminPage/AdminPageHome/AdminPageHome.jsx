@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Layout, Menu, Button } from 'antd'
+import React, { useState } from "react";
+import { Layout, Menu, Button } from "antd";
 import {
   FileTextOutlined,
   CommentOutlined,
@@ -9,58 +9,61 @@ import {
   UnorderedListOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
-} from '@ant-design/icons'
-import './AdminPageHome.css'
-import { useNavigate, Outlet, useLocation } from 'react-router-dom'
-import AdminAccount from '../AdminAccount/AdminAccount'
-import AdminTheatre from '../AdminTheatre/AdminTheatre'
-import AdminFeature from '../AdminFeature/AdminFeature'
-import AdminHall from '../AdminHall/AdminHall'
-import AdminShowtime from '../AdminShowtime/AdminShowtime'
-import AdminMovie from '../AdminMovie/AdminMovie'
-import AdminShowin from '../AdminShownIn/AdminShowin'
-const { Header, Sider, Content } = Layout
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
+import "./AdminPageHome.css";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import AdminAccount from "../AdminAccount/AdminAccount";
+import AdminTheatre from "../AdminTheatre/AdminTheatre";
+import AdminFeature from "../AdminFeature/AdminFeature";
+import AdminHall from "../AdminHall/AdminHall";
+import AdminShowtime from "../AdminShowtime/AdminShowtime";
+import AdminMovie from "../AdminMovie/AdminMovie";
+import AdminShowin from "../AdminShownIn/AdminShowin";
+import Dashboard from "../Dashboard/Dashboard";
+const { Header, Sider, Content } = Layout;
 
 const AdminPageHome = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [collapsed, setCollapsed] = useState(false)
-  const [selectedKey, setSelectedKey] = useState('articles')
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedKey, setSelectedKey] = useState("articles");
+  const user = JSON.parse(localStorage.getItem("user"));
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    navigate('/')
-  }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
   const renderContent = () => {
     switch (selectedKey) {
-      case 'movie':
-        return <AdminMovie />
-      case 'shownin':
-        return <AdminShowin />
-      case 'users':
-        return <AdminAccount />
-      case 'theatre':
-        return <AdminTheatre />
-      case 'feature':
-        return <AdminFeature />
-      case 'hall':
-        return <AdminHall />
-      case 'showtime':
-        return <AdminShowtime />
-      case 'categories':
-        return
-      case 'logout':
-        navigate('/')
-        return null
-      case 'homepage':
-        navigate('/')
+      case "dashboard":
+        return <Dashboard />;
+      case "movie":
+        return <AdminMovie />;
+      case "shownin":
+        return <AdminShowin />;
+      case "users":
+        return <AdminAccount />;
+      case "theatre":
+        return <AdminTheatre />;
+      case "feature":
+        return <AdminFeature />;
+      case "hall":
+        return <AdminHall />;
+      case "showtime":
+        return <AdminShowtime />;
+      case "categories":
+        return;
+      case "logout":
+        navigate("/");
+        return null;
+      case "homepage":
+        navigate("/");
       default:
-        return <h2>Chào mừng đến trang Admin</h2>
+        return <h2>Chào mừng đến trang Admin</h2>;
     }
-  }
+  };
   //AdminShowtime
   return (
     <Layout className="admin-layout">
@@ -69,11 +72,14 @@ const AdminPageHome = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['articles']}
+          defaultSelectedKeys={["articles"]}
           onClick={(e) => setSelectedKey(e.key)}
         >
           <Menu.Item key="homepage" icon={<FileTextOutlined />}>
             Trang chủ
+          </Menu.Item>
+          <Menu.Item key="dashboard" icon={<FileTextOutlined />}>
+            Thống kê
           </Menu.Item>
           <Menu.Item key="movie" icon={<FileTextOutlined />}>
             Movie
@@ -114,14 +120,14 @@ const AdminPageHome = () => {
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: '18px', width: 48, height: 48 }}
+            style={{ fontSize: "18px", width: 48, height: 48 }}
           />
           <h1>Admin Dashboard</h1>
         </Header>
         <Content className="admin-content">{renderContent()}</Content>
       </Layout>
     </Layout>
-  )
-}
+  );
+};
 
-export default AdminPageHome
+export default AdminPageHome;

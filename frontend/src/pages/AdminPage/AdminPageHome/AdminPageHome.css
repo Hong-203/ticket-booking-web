@@ -29,3 +29,16 @@
   min-height: 280px;
   border-radius: 8px;
 }
+.logo-web-ad {
+  height: 150px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.logo-web-ad:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}

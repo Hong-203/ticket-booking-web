@@ -28,16 +28,16 @@ export default function Dashboard() {
   const [monthlyRevenue, setMonthlyRevenue] = useState([]);
   const [movieStats, setMovieStats] = useState([]);
   const [growth, setGrowth] = useState(0);
-  // Fetch API data
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     (async () => {
       try {
         const [ov, us, ts, mv, rev] = await Promise.all([
-          axios.get("http://localhost:3001/apis/statics/overview"),
-          axios.get("http://localhost:3001/apis/statics/users"),
-          axios.get("http://localhost:3001/apis/statics/tickets"),
-          axios.get("http://localhost:3001/apis/statics/movies"),
-          axios.get("http://localhost:3001/apis/statics/revenue/monthly"),
+          axios.get(`${baseURL}/statics/overview`),
+          axios.get(`${baseURL}/statics/users`),
+          axios.get(`${baseURL}/statics/tickets`),
+          axios.get(`${baseURL}/statics/movies`),
+          axios.get(`${baseURL}/statics/revenue/monthly`),
         ]);
 
         setOverview(ov.data);

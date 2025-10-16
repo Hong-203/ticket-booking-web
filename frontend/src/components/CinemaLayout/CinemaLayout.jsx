@@ -18,24 +18,11 @@ const CinemaLayout = ({
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const seatList = useSelector((state) => state.seat.seatList || []);
   const currentUserId = storedUser && storedUser.id;
-  // const shownInList = useSelector((state) => state.shownIn.shownInList || [])
-  // const movieInfos = shownInList.length > 0 ? shownInList[0] : {}
-  console.log("currentUserId", currentUserId);
-  // Lấy thông tin ghế và suất chiếu khi có đủ các tham số
+
   useEffect(() => {
     const query = `movie_id=${movieId}&hall_id=${hallId}&showtime_id=${showtimeId}`;
-    // if (!movieId || !hallId || !showtimeId) return
-
-    // dispatch(getAllShownIn(query))
     dispatch(getSeatAvailable(query));
   }, [dispatch, movieId, hallId, showtimeId]);
-
-  // useEffect(() => {
-  //   if (shownInList.length > 0) {
-  //     setMovieInfo(shownInList[0])
-  //   }
-  // }, [shownInList, setMovieInfo])
-  // Cập nhật state seats từ seatList
 
   useEffect(() => {
     if (!Array.isArray(seatList)) return;
@@ -44,15 +31,18 @@ const CinemaLayout = ({
     const userSelectedSeats = [];
 
     seatList.forEach((seat) => {
-      const type = seat?.name?.startsWith("L") ? "couple" : "single";
+      // ✅ Xác định loại ghế
+      let type = "single";
+      if (seat?.name?.startsWith("L")) type = "couple";
+      else if (["F", "G", "H", "I", "J"].includes(seat?.name?.charAt(0)))
+        type = "vip";
+
       let status = seat.status;
 
-      // Nếu ghế thuộc về user hiện tại → coi như đang chọn
       if (seat.user_id === currentUserId && status !== "booked") {
         status = "pending";
       }
 
-      // Nếu ghế pending nhưng thuộc user khác → coi như booked
       if (status === "pending" && seat.user_id !== currentUserId) {
         status = "booked";
       }
@@ -60,7 +50,6 @@ const CinemaLayout = ({
       const seatInfo = { ...seat, type, status };
       seatData[seat.name] = seatInfo;
 
-      // Nếu là ghế của user → thêm vào danh sách selectedSeats
       if (status === "pending" && seat.user_id === currentUserId) {
         userSelectedSeats.push({
           id: seat.id,
@@ -76,18 +65,15 @@ const CinemaLayout = ({
     setSeats(seatData);
     setLoading(false);
 
-    // 🔥 Nếu parent chưa có selectedSeats hoặc đang rỗng → set lại
     if (selectedSeats.length === 0 && userSelectedSeats.length > 0) {
       setSelectedSeats(userSelectedSeats);
     }
   }, [seatList, selectedSeats, currentUserId, setSelectedSeats]);
 
-  // 🧠 Cập nhật lại handleSeatClick
   const handleSeatClick = (seatName) => {
     const seat = seats[seatName];
     if (!seat) return;
 
-    // Nếu ghế đã đặt hoặc pending bởi user khác → không cho chọn
     if (
       seat.status === "booked" ||
       (seat.status === "pending" && seat.user_id !== currentUserId)
@@ -97,15 +83,13 @@ const CinemaLayout = ({
     const isSelected = selectedSeats.some((s) => s.name === seatName);
 
     if (isSelected) {
-      // ❌ Bỏ chọn ghế
       const updated = selectedSeats.filter((s) => s.name !== seatName);
       setSelectedSeats(updated);
     } else {
-      // ✅ Chọn ghế
       const newSeat = {
         id: seat.id,
         name: seat.name,
-        type: seat.name.startsWith("L") ? "couple" : "single",
+        type: seat.type,
         row: seat.name.charAt(0),
         number: seat.name.slice(1),
         price: seat.price || 0,
@@ -115,7 +99,6 @@ const CinemaLayout = ({
     }
   };
 
-  // 🎨 Cập nhật lại getSeatClassName — ưu tiên selectedSeats
   const getSeatClassName = (seat) => {
     const isSelected = selectedSeats.some((s) => s.name === seat.name);
     const isBooked =
@@ -139,7 +122,11 @@ const CinemaLayout = ({
         <Tooltip
           key={seatName}
           title={`Ghế ${seatName} - ${
-            seat.type === "single" ? "Ghế đơn" : "Ghế đôi"
+            seat.type === "single"
+              ? "Ghế đơn"
+              : seat.type === "vip"
+              ? "Ghế VIP"
+              : "Ghế đôi"
           } - ${
             seat.status === "booked"
               ? "Đã đặt"
@@ -157,7 +144,6 @@ const CinemaLayout = ({
         </Tooltip>
       );
 
-      // Khoảng cách logic
       if (rowLetter !== "L" && i === 12) {
         row.push(<div key={`${rowLetter}-gap`} className="seat-gap" />);
       } else if (rowLetter === "L") {
@@ -175,13 +161,11 @@ const CinemaLayout = ({
   const getStatusCount = (status) =>
     Object.values(seats).filter((seat) => seat.status === status).length;
 
-  // Sử dụng selectedSeats từ props thay vì tính toán từ seats local
   const currentSelectedSeats = useMemo(
     () => selectedSeats || [],
     [selectedSeats]
   );
 
-  // Tính tổng giá tiền
   const totalPrice = useMemo(() => {
     return currentSelectedSeats.reduce((total, seat) => {
       return total + (seat.price || 0);
@@ -206,20 +190,31 @@ const CinemaLayout = ({
               <div className="screen-shadow" />
             </div>
 
-            {/* Ghế thường */}
             <div className="seats-container">
+              {/* Ghế thường */}
               <div className="seat-section">
                 <h4 className="section-title">Ghế Thường</h4>
-                {["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"].map(
-                  (row) => (
-                    <div key={row} className="seat-row">
-                      <div className="row-label">{row}</div>
-                      <div className="seats-in-row">
-                        {renderSeatRow(row, 1, 24)}
-                      </div>
+                {["A", "B", "C", "D", "E"].map((row) => (
+                  <div key={row} className="seat-row">
+                    <div className="row-label">{row}</div>
+                    <div className="seats-in-row">
+                      {renderSeatRow(row, 1, 24)}
                     </div>
-                  )
-                )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Ghế VIP */}
+              <div className="seat-section">
+                <h4 className="section-title">Ghế VIP</h4>
+                {["F", "G", "H", "I", "J"].map((row) => (
+                  <div key={row} className="seat-row">
+                    <div className="row-label">{row}</div>
+                    <div className="seats-in-row">
+                      {renderSeatRow(row, 1, 24)}
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Khoảng cách giữa */}
@@ -227,7 +222,7 @@ const CinemaLayout = ({
 
               {/* Ghế đôi */}
               <div className="seat-section">
-                <h4 className="section-title">Ghế Đôi VIP</h4>
+                <h4 className="section-title">Ghế Đôi</h4>
                 <div className="seat-row">
                   <div className="row-label">L</div>
                   <div className="seats-in-row">
@@ -259,7 +254,6 @@ const CinemaLayout = ({
               </div>
             </div>
 
-            {/* Thông tin tổng hợp */}
             <div className="summary">
               <div className="summary-content">
                 <Badge count={currentSelectedSeats.length} showZero>

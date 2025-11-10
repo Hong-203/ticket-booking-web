@@ -72,6 +72,7 @@ const Login = ({ setIsAdmin }) => {
           <div className="logo-container">
             <img src={logo} alt="Logo" />
           </div>
+          <h2 className="res-signup-title">Đăng nhập</h2>
 
           <form onSubmit={handleLogin}>
             <TextInput

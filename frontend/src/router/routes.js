@@ -16,12 +16,18 @@ import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
 import ProfilePage from "../pages/Profile/Profile";
 import Register from "../pages/Register/Register";
+import SearchPage from "../pages/SearchPage/SearchPage";
 import TheatrePage from "../pages/TheatrePage/TheatrePage";
 
 export const routes = [
   {
     path: "/",
     page: HomePage,
+    isShowHeader: true,
+  },
+  {
+    path: "/search",
+    page: SearchPage,
     isShowHeader: true,
   },
   {

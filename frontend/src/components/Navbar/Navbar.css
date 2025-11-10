@@ -5,9 +5,9 @@
   padding: 0 2rem;
   height: 64px;
   width: 100%;
-  /* color: #e6e6e6;
-   */
-  color: #0af35e;
+  color: #000;
+  background-color: #fba600;
+  /* color: #0af35e; */
   position: fixed;
   top: 0;
   left: 0;
@@ -37,7 +37,7 @@
   align-items: center;
   text-decoration: none;
   gap: 0.6rem;
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   padding: 1rem;
   border-radius: 20px;
 }
@@ -72,7 +72,7 @@
 .nav-item:link,
 .nav-item:visited {
   text-decoration: none;
-  color: #0af35e;
+  color: #000;
   font-weight: bold;
   transition: all 0.3s ease-in;
   display: inline-block;
@@ -82,7 +82,7 @@
 
 .nav-item:hover,
 .nav-item:active {
-  background-color: #eb3656;
+  background-color: #fff;
 }
 .nav-signup {
   display: flex;
@@ -155,11 +155,11 @@
   border: 1px solid #e6e6e6;
 }
 
-.btn-signup:hover {
+/* .btn-signup:hover {
   background-color: #eb3656;
   border-color: #eb3656;
   color: white;
-}
+} */
 
 .btn-login {
   background-color: #eb3656;
@@ -173,4 +173,376 @@
 img.logo-web-my {
   width: 170px;
   height: auto;
+}
+
+/* ===== MENU TOGGLE BUTTON (Mobile) ===== */
+.menu-toggle-col {
+  display: none;
+}
+
+.btn-menu {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon {
+  font-size: 24px;
+  color: #0af35e;
+}
+
+/* ===== NAVIGATION ITEMS ===== */
+.nav-items {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 0;
+}
+
+/* .nav-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease;
+} */
+
+.nav-item:hover {
+  color: #000;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* ===== USER SECTION ===== */
+.nav-signed-name {
+  color: #000;
+  margin: 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.customer-profile-btn {
+  background: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.customer-profile-btn:hover {
+  background: #f2f3d8;
+  transform: scale(1.1);
+}
+
+/* ===== AUTH BUTTONS ===== */
+.btn-auth {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-signup {
+  background: #fff;
+  color: #000;
+  border: 2px solid #fff;
+}
+
+.btn-signup:hover {
+  background: #e8e8ba;
+  color: #1a1a2e;
+  transform: translateY(-2px);
+}
+
+.btn-login {
+  background: #fff;
+  color: #1a1a2e;
+}
+
+.btn-login:hover {
+  background: #f2f3d8;
+  transform: translateY(-2px);
+  /* box-shadow: 0 4px 12px rgba(10, 243, 94, 0.3); */
+}
+
+/* ===== SELECT DROPDOWNS ===== */
+.ant-select {
+  margin-right: 10px;
+}
+
+.ant-select-selector {
+  background: #fff !important;
+  border: 1px solid rgba(10, 243, 94, 0.3) !important;
+  color: #000 !important;
+  border-radius: 15px !important;
+}
+
+.ant-select-selector:hover {
+  border-color: #0af35e !important;
+}
+
+.ant-select-selection-placeholder {
+  color: #acaaaa !important;
+}
+
+.ant-select-arrow {
+  color: #0af35e !important;
+}
+
+/* ===== TABLET RESPONSIVE (768px - 1024px) ===== */
+@media screen and (max-width: 1024px) {
+  .navbar-header {
+    padding: 12px 20px;
+  }
+
+  .nav-items {
+    gap: 20px;
+  }
+
+  .nav-item {
+    font-size: 14px;
+  }
+
+  .ant-select {
+    width: 140px !important;
+  }
+
+  .ant-select:last-of-type {
+    width: 160px !important;
+  }
+
+  .btn-auth {
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+}
+
+/* ===== MOBILE RESPONSIVE (< 768px) ===== */
+@media screen and (max-width: 768px) {
+  .navbar-header {
+    padding: 10px 15px;
+  }
+
+  .logo-web-my {
+    height: 40px;
+  }
+
+  /* Show menu toggle button */
+  .menu-toggle-col {
+    display: block;
+  }
+
+  /* 1. ẨN NAV CONTENT (Menu + Auth) MẶC ĐỊNH */
+  .nav-full-content {
+    position: fixed;
+    top: 64px; /* Hoặc 60px/70px, tùy chiều cao thực tế của header */
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 64px);
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    transition: left 0.3s ease-in-out;
+    z-index: 998;
+    padding: 20px;
+    overflow-y: auto;
+
+    /* Chuyển nội dung thành Flex cột để xếp chồng */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* 2. HIỆN NAV CONTENT KHI MỞ */
+  .nav-full-content.menu-open {
+    left: 0;
+    /* Đảm bảo nội dung bên trong cũng xếp dọc */
+    flex-direction: column;
+  }
+
+  .nav-full-content .ant-row {
+    /* Đảm bảo Row bên trong chiếm hết chiều rộng */
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* 3. CĂN CHỈNH MENU LINKS */
+  .nav-menu-links {
+    width: 100%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .nav-items {
+    /* Chuyển menu link thành dọc */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .nav-item {
+    font-size: 18px;
+    width: 100%;
+    padding: 12px 0;
+    text-align: left;
+  }
+
+  .nav-item::after {
+    display: none; /* Ẩn underline effect trên mobile */
+  }
+
+  .nav-item:hover {
+    color: #eb3656; /* Đổi màu hover cho mobile */
+  }
+
+  /* 4. CĂN CHỈNH USER/AUTH SECTION */
+  .nav-auth-controls {
+    width: 100%;
+  }
+
+  /* Đảm bảo các Select Dropdown xếp dọc */
+  .ant-select {
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 15px;
+    display: block; /* Hiện lại các select đã bị ẩn */
+  }
+
+  /* Gộp các icon và nút */
+  .nav-auth-controls > .ant-row > .ant-col {
+    /* Đảm bảo mỗi mục (Search, Auth Group, Select) chiếm 1 hàng */
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  /* Nhóm các icon/button auth nằm trên cùng một hàng (nếu đủ chỗ) */
+  .nav-auth-controls .ant-row:last-child {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .nav-auth-controls .ant-input-affix-wrapper {
+    width: 100% !important;
+  }
+
+  .btn-auth {
+    width: 48%; /* Chia đôi width cho Sign up/Sign in */
+    margin-left: 0;
+  }
+
+  .nav-signed-name {
+    margin-left: 10px;
+  }
+
+  /* Ẩn các phần không cần thiết ở menu links (vì chúng nằm trong nav-auth-controls) */
+  .nav-items .ant-select,
+  .nav-items .ant-row {
+    display: none;
+  }
+
+  /* Fix user/search row alignment */
+  .nav-auth-controls .ant-row > .ant-col:last-child > .ant-row {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+}
+
+/* ===== LARGE MOBILE (480px - 768px) ===== */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .btn-auth {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .nav-signed-name {
+    font-size: 12px;
+  }
+
+  .customer-profile-btn {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.hidden-mobile {
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  .hidden-mobile {
+    display: none;
+  }
+}
+
+.show-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .show-mobile {
+    display: block;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.nav-items.menu-open li {
+  animation: slideInFromLeft 0.3s ease-out forwards;
+}
+
+.nav-items.menu-open li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.nav-items.menu-open li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.nav-items.menu-open li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.nav-items.menu-open li:nth-child(4) {
+  animation-delay: 0.4s;
 }

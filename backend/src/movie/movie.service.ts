@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, LessThanOrEqual, MoreThan, Repository } from 'typeorm';
+import { IsNull, LessThanOrEqual, Like, MoreThan, Repository } from 'typeorm';
 
 import { Movie } from './entities/movie.entity';
 
@@ -81,7 +81,7 @@ export class MovieService {
   }
 
   async findAll(query: GetMovieQueryDto): Promise<PaginationResult<Movie>> {
-    const { status, page, limit } = query;
+    const { status, page, limit, search } = query;
     const filters: any = {};
     const today = new Date();
 
@@ -89,6 +89,10 @@ export class MovieService {
       filters.release_date = LessThanOrEqual(today);
     } else if (status === ReleaseStatus.COMING_SOON) {
       filters.release_date = MoreThan(today);
+    }
+
+    if (search) {
+      filters.name = Like(`%${search}%`); // Tìm kiếm tên phim chứa chuỗi 'search'
     }
 
     return paginate(this.movieRepo, filters, page, limit, {

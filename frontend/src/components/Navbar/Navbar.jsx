@@ -1,10 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  UserOutlined,
+  SearchOutlined,
+  CloseOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
 import logo from "../../assets/Logo_CineZone_1.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Select, Row, Col } from "antd";
+import { Select, Row, Col, Input } from "antd";
 import {
   setSelectedLocation,
   setSelectedTheatre,
@@ -13,6 +19,7 @@ import {
   getAllLocation,
   theatreByLocation,
 } from "../../stores/Theatre/theatreApis";
+import { getAllMovie } from "../../stores/Movie/movieApis";
 
 const { Option } = Select;
 
@@ -20,6 +27,9 @@ const Navbar = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const isLoggedIn = storedUser && storedUser.token;
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -66,6 +76,27 @@ const Navbar = () => {
     dispatch(setSelectedTheatre(theatreId));
   };
 
+  const handleSearchToggle = () => {
+    setShowSearch(!showSearch);
+    setSearchValue("");
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === "Enter" && searchValue.trim()) {
+      dispatch(getAllMovie({ page: 1, limit: 12, search: searchValue }));
+      // ✅ Chuyển hướng đến trang kết quả
+      navigate(`/search?search=${encodeURIComponent(searchValue)}`);
+    }
+  };
+
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="navbar-header">
       <Row align="middle" justify="space-between" style={{ width: "100%" }}>
@@ -76,105 +107,233 @@ const Navbar = () => {
           </Link>
         </Col>
 
-        {/* Phần 2: Menu + Dropdowns */}
-        <Col flex="auto">
-          <Row align="middle" justify="center" gutter={16}>
-            <Col>
+        <Col className="menu-toggle-col">
+          <button className="btn-menu" onClick={handleMenuToggle}>
+            {isMenuOpen ? (
+              <CloseOutlined className="menu-icon" /> // Dùng dấu X khi mở
+            ) : (
+              <MenuOutlined className="menu-icon" /> // Dùng 3 gạch ngang khi đóng
+            )}
+          </button>
+        </Col>
+
+        <Col
+          flex="auto"
+          className={`nav-full-content ${isMenuOpen ? "menu-open" : ""}`}
+        >
+          <Row align="middle" justify="space-between" style={{ width: "100%" }}>
+            {/* Phần 2: Menu Links */}
+            <Col className="nav-menu-links">
               <ul className="nav-items">
                 <li>
-                  <Link className="nav-item" to="/">
-                    Trang chủ
+                  <Link className="nav-item" to="/" onClick={handleMenuToggle}>
+                    {" "}
+                    Trang chủ{" "}
                   </Link>
                 </li>
                 <li>
-                  <Link className="nav-item" to="/theatre">
-                    Rạp chiếu
+                  <Link
+                    className="nav-item"
+                    to="/theatre"
+                    onClick={handleMenuToggle}
+                  >
+                    {" "}
+                    Rạp chiếu{" "}
                   </Link>
                 </li>
                 <li>
-                  <Link className="nav-item" to="/aboutus">
-                    Về chúng tôi
+                  <Link
+                    className="nav-item"
+                    to="/aboutus"
+                    onClick={handleMenuToggle}
+                  >
+                    {" "}
+                    Về chúng tôi{" "}
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    className="nav-item"
+                    to="/phim-dang-cong-chieu"
+                    onClick={handleMenuToggle}
+                  >
+                    {" "}
+                    Đang công chiếu{" "}
+                  </Link>
+                </li>
+                {/* <li>
+                  <Link
+                    className="nav-item"
+                    to="/phim-sap-chieu"
+                    onClick={handleMenuToggle}
+                  >
+                    {" "}
+                    Sắp công chiếu{" "}
+                  </Link>
+                </li> */}
                 {isAdmin && (
                   <li>
-                    <Link className="nav-item" to="/admin">
-                      Admin
+                    <Link
+                      className="nav-item"
+                      to="/admin"
+                      onClick={handleMenuToggle}
+                    >
+                      {" "}
+                      Admin{" "}
                     </Link>
                   </li>
                 )}
               </ul>
             </Col>
-          </Row>
-        </Col>
 
-        {/* Phần 3: User / Sign in */}
-        <Col>
-          {isLoggedIn ? (
-            <Row align="middle" gutter={10}>
-              <Col>
-                <Select
-                  value={selectedLocation}
-                  onChange={handleLocationChange}
-                  placeholder="Chọn khu vực"
-                  style={{ width: 160 }}
-                  allowClear
-                >
-                  {listLocation.map((loc) => (
-                    <Option key={loc.slug_location} value={loc.slug_location}>
-                      {loc.location}
-                    </Option>
-                  ))}
-                </Select>
-                {selectedLocation && (
-                  <Select
-                    value={selectedTheatre}
-                    onChange={handleTheatreChange}
-                    placeholder="Chọn rạp"
-                    style={{ width: 180 }}
-                    allowClear
-                  >
-                    {listTheatreByLocation.map((theatre) => (
-                      <Option key={theatre.id} value={theatre.id}>
-                        {theatre.name}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              </Col>
-              <Col>
-                <p className="nav-signed-name">{storedUser.username}</p>
-              </Col>
-              <Col>
-                <Link to="/profile" className="customer-profile-btn">
-                  <UserOutlined style={{ fontSize: "20px", color: "#000" }} />
-                </Link>
-              </Col>
-              <Col>
-                <LogoutOutlined
-                  onClick={handleLogout}
-                  style={{
-                    fontSize: "20px",
-                    color: "#000",
-                    cursor: "pointer",
-                  }}
-                />
-              </Col>
-            </Row>
-          ) : (
-            <Row align="middle" gutter={10}>
-              <Col>
-                <Link to="/signup">
-                  <button className="btn-auth btn-signup">Sign up</button>
-                </Link>
-              </Col>
-              <Col>
-                <Link to="/login">
-                  <button className="btn-auth btn-login">Sign in</button>
-                </Link>
-              </Col>
-            </Row>
-          )}
+            {/* Phần 3: User / Sign in / Dropdowns */}
+            <Col className="nav-auth-controls">
+              {isLoggedIn ? (
+                <Row align="middle" gutter={[10, 10]} wrap={true}>
+                  {" "}
+                  {/* Thêm gutter dọc */}
+                  <Col className="hidden-mobile">
+                    {" "}
+                    {/* Ẩn khu vực này trên mobile, sẽ đưa vào menu-open */}
+                    <Select
+                      value={selectedLocation}
+                      onChange={handleLocationChange}
+                      placeholder="Chọn khu vực"
+                      style={{ width: 160, color: "#000" }}
+                      allowClear
+                    >
+                      {listLocation.map((loc) => (
+                        <Option
+                          key={loc.slug_location}
+                          value={loc.slug_location}
+                        >
+                          {loc.location}
+                        </Option>
+                      ))}
+                    </Select>
+                    {selectedLocation && (
+                      <Select
+                        value={selectedTheatre}
+                        onChange={handleTheatreChange}
+                        placeholder="Chọn rạp"
+                        style={{ width: 180 }}
+                        allowClear
+                      >
+                        {listTheatreByLocation.map((theatre) => (
+                          <Option key={theatre.id} value={theatre.id}>
+                            {theatre.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Col>
+                  {/* Icons và Username khi đăng nhập */}
+                  <Col>
+                    <Row align="middle" gutter={10}>
+                      <Col>
+                        {showSearch ? (
+                          <Input
+                            placeholder="Tìm kiếm phim..."
+                            value={searchValue}
+                            onChange={handleSearchChange}
+                            onKeyDown={handleSearchSubmit}
+                            onBlur={() => !searchValue && setShowSearch(false)}
+                            autoFocus
+                            style={{ width: 200 }}
+                            prefix={<SearchOutlined />}
+                          />
+                        ) : (
+                          <SearchOutlined
+                            onClick={handleSearchToggle}
+                            className="search-icon-nav"
+                            style={{
+                              fontSize: "20px",
+                              color: "#000",
+                              cursor: "pointer",
+                            }}
+                          />
+                        )}
+                      </Col>
+                      <Col className="hidden-mobile">
+                        <p className="nav-signed-name">{storedUser.username}</p>
+                      </Col>
+                      <Col>
+                        <Link
+                          to="/profile"
+                          className="customer-profile-btn"
+                          onClick={handleMenuToggle}
+                        >
+                          <UserOutlined
+                            style={{ fontSize: "20px", color: "#000" }}
+                          />
+                        </Link>
+                      </Col>
+                      <Col>
+                        <LogoutOutlined
+                          onClick={() => {
+                            handleLogout();
+                            handleMenuToggle();
+                          }}
+                          className="logout-icon-nav"
+                          style={{
+                            fontSize: "20px",
+                            color: "#000",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              ) : (
+                <Row align="middle" gutter={10}>
+                  <Col>
+                    {showSearch ? (
+                      <Input
+                        placeholder="Tìm kiếm phim..."
+                        value={searchValue}
+                        onChange={handleSearchChange}
+                        onKeyDown={handleSearchSubmit}
+                        onBlur={() => !searchValue && setShowSearch(false)}
+                        autoFocus
+                        style={{ width: 200 }}
+                        prefix={<SearchOutlined />}
+                      />
+                    ) : (
+                      <SearchOutlined
+                        onClick={handleSearchToggle}
+                        style={{
+                          fontSize: "20px",
+                          color: "#000",
+                          cursor: "pointer",
+                        }}
+                      />
+                    )}
+                  </Col>
+                  <Col>
+                    <Link to="/signup" onClick={handleMenuToggle}>
+                      <button
+                        style={{ width: "135px" }}
+                        className="btn-auth btn-signup"
+                      >
+                        Đăng ký
+                      </button>
+                    </Link>
+                  </Col>
+                  <Col>
+                    <Link to="/login" onClick={handleMenuToggle}>
+                      <button
+                        style={{ width: "135px" }}
+                        className="btn-auth btn-login"
+                      >
+                        Đăng nhập
+                      </button>
+                    </Link>
+                  </Col>
+                </Row>
+              )}
+            </Col>
+          </Row>
         </Col>
       </Row>
     </header>

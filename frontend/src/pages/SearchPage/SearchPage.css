@@ -1,0 +1,30 @@
+.section-search {
+  padding: 5rem 2rem;
+  background-color: #1a1d2c;
+  min-height: 80vh;
+  color: #fff;
+}
+
+.search-heading {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.search-heading span {
+  color: #eb3656;
+}
+
+.search-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 2rem;
+  justify-items: center;
+}
+
+.search-empty {
+  text-align: center;
+  color: #ccc;
+  font-size: 1rem;
+  margin-top: 4rem;
+}

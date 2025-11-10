@@ -113,7 +113,7 @@ const Register = () => {
               className="res-social-button res-google"
               onClick={handleGoogleLogin}
             >
-              Đăng ký bằng
+              Đăng ký với
               <Icon icon="logos:google-icon" className="res-icon" width={32} />
             </button>
             {/* <button className="res-social-button res-facebook">

@@ -1,4 +1,4 @@
-import { IsOptional, IsEnum, Min, IsInt } from 'class-validator';
+import { IsOptional, IsEnum, Min, IsInt, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ReleaseStatus } from 'src/constants';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -29,4 +29,12 @@ export class GetMovieQueryDto {
   @Min(1)
   @ApiPropertyOptional({ example: 10, description: 'Số lượng mỗi trang' })
   limit?: number = 10;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    example: 'Avengers',
+    description: 'Tìm kiếm phim theo tên (hỗ trợ tìm kiếm một phần)',
+  })
+  search?: string;
 }

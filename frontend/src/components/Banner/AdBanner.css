@@ -10,14 +10,14 @@
 
 .ad-slide {
   width: 100%;
-  height: 600px;
+  height: 460px;
   position: relative;
   padding-top: 63px;
 }
 .ad-slide-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 1297px;
+  height: 397px;
+  object-fit: fill;
 }
 .ad-slide-bg {
   width: 100vw;

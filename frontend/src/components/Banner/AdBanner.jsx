@@ -4,7 +4,9 @@ import "./AdBanner.css";
 
 import banner1 from "../../assets/banner1.png";
 import banner2 from "../../assets/banner2.png";
-import banner3 from "../../assets/banner3.png";
+import banner3 from "../../assets/banner3.jpg";
+import banner4 from "../../assets/banner4.png";
+import banner5 from "../../assets/banner5.png";
 
 const banners = [
   {
@@ -21,13 +23,27 @@ const banners = [
     image: banner2,
     buttonText: "Đăng ký",
   },
+  // {
+  //   id: 3,
+  //   title: "Suất chiếu đặc biệt",
+  //   description: "Chỉ có vào cuối tuần! Số lượng có hạn!",
+  //   image: banner2,
+  //   buttonText: "Đặt vé",
+  // },
   {
-    id: 3,
+    id: 4,
     title: "Suất chiếu đặc biệt",
     description: "Chỉ có vào cuối tuần! Số lượng có hạn!",
-    image: banner3,
+    image: banner4,
     buttonText: "Đặt vé",
   },
+  //   {
+  //   id: 5,
+  //   title: "Cinema",
+  //   description: "Chỉ có vào cuối tuần! Số lượng có hạn!",
+  //   image: banner5,
+  //   buttonText: "Đặt vé",
+  // }
 ];
 
 const AdBanner = () => {

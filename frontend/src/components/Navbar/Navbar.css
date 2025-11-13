@@ -199,7 +199,7 @@ img.logo-web-my {
 .nav-items {
   list-style: none;
   display: flex;
-  gap: 30px;
+  gap: 5px;
   margin: 0;
   padding: 0;
   align-items: center;
@@ -318,6 +318,68 @@ img.logo-web-my {
   color: #0af35e !important;
 }
 
+/* Thêm đoạn CSS này vào file Navbar.css */
+
+.search-overlay {
+  /* Che phủ toàn bộ viewport (100% màn hình) */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Làm tối nền (màu đen mờ) */
+  background-color: rgba(0, 0, 0, 0.9);
+  /* Đảm bảo nó nằm trên tất cả các thành phần khác */
+  z-index: 9999; /* Cực kỳ cao để nằm trên mọi thứ */
+  /* Căn giữa input tìm kiếm */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Thêm hiệu ứng chuyển động nếu muốn */
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.search-input-container {
+  /* Container để chứa Input, đảm bảo nó có giới hạn kích thước */
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  max-width: 600px; /* Chiều rộng tối đa */
+  padding: 0 20px;
+}
+
+/* Tùy chỉnh input của Ant Design trong overlay */
+.search-overlay .ant-input-affix-wrapper.overlay-search-input {
+  /* Kích thước lớn hơn cho trải nghiệm tìm kiếm nổi bật */
+  height: 55px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  /* Box shadow trắng cho nổi bật trên nền tối */
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+  border: 1px solid #ffffff33;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.overlay-search-input .ant-input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+
+.search-overlay .ant-input {
+  /* Chữ và nền input trong suốt */
+  color: #fff !important;
+  background-color: transparent;
+}
+
+.search-overlay .ant-input-prefix,
+.search-overlay .ant-input-suffix {
+  /* Tăng kích thước và màu trắng cho icon */
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 /* ===== TABLET RESPONSIVE (768px - 1024px) ===== */
 @media screen and (max-width: 1024px) {
   .navbar-header {
@@ -368,7 +430,8 @@ img.logo-web-my {
     left: -100%;
     width: 100%;
     height: calc(100vh - 64px);
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    /* background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); */
+    background-color: #fff;
     transition: left 0.3s ease-in-out;
     z-index: 998;
     padding: 20px;

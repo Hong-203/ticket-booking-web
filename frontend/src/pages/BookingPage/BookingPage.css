@@ -7,7 +7,7 @@
 }
 
 .booking-page::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -90,7 +90,7 @@
 }
 
 .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -99,81 +99,40 @@
   background: #764ba2;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .booking-content {
-    grid-template-columns: 1fr 350px;
-    gap: 20px;
-  }
+/* ==================================== */
+/* RESPONSIVE (Màn hình nhỏ) */
+/* ==================================== */
 
-  .booking-container {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 968px) {
+@media (max-width: 992px) {
+  /* Thay đổi bố cục Grid cho màn hình nhỏ hơn laptop */
   .booking-content {
+    /* Chuyển thành 1 cột duy nhất */
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
+  /*
+   * Tắt thuộc tính sticky cho cột vé
+   * để nó không che khuất nội dung khi cuộn trên di động
+   */
   .ticket-section {
     position: static;
+    top: auto;
+    /* Đảm bảo cột vé nằm dưới sơ đồ ghế */
+    order: 2;
+  }
+
+  .cinema-section {
+    /* Đảm bảo cột sơ đồ ghế nằm trên cột vé */
+    order: 1;
   }
 
   .booking-title {
-    font-size: 2rem;
+    font-size: 2em;
   }
 
-  .cinema-section,
-  .ticket-wrapper {
-    padding: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .booking-header {
-    padding: 20px 0;
-    margin-bottom: 20px;
-  }
-
-  .booking-title {
-    font-size: 1.8rem;
-  }
-
-  .booking-subtitle {
-    font-size: 1rem;
-  }
-
-  .booking-actions {
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-  }
-
-  .btn-back,
-  .btn-confirm {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .cinema-section,
-  .ticket-wrapper {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .booking-container {
+  .booking-page {
     padding: 10px;
-  }
-
-  .booking-title {
-    font-size: 1.5rem;
-  }
-
-  .section-title {
-    font-size: 1.2rem;
   }
 }
 

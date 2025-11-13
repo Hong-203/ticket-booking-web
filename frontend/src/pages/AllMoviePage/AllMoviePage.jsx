@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Spin, Empty, Pagination } from 'antd'
-import { getAllMovie } from '../../stores/Movie/movieApis'
-import CollectionCard from '../../components/CollectionCard'
-import './MoviePage.css'
-import { DoubleRightOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Spin, Empty, Pagination } from "antd";
+import { getAllMovie } from "../../stores/Movie/movieApis";
+import CollectionCard from "../../components/CollectionCard";
+import "./MoviePage.css";
+import { DoubleRightOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const AllMoviePage = () => {
-  const dispatch = useDispatch()
-  const movieList = useSelector((state) => state.movie.movieList || [])
-  const [page, setPage] = useState(1)
-  const [movieData, setMovieData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const movieList = useSelector((state) => state.movie.movieList || []);
+  const [page, setPage] = useState(1);
+  const [movieData, setMovieData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
-    dispatch(getAllMovie({ status: 'now_showing', page: page, limit: 12 }))
-  }, [dispatch])
+    dispatch(getAllMovie({ status: "now_showing", page: page, limit: 12 }));
+  }, [dispatch]);
 
   useEffect(() => {
     if (Array.isArray(movieList)) {
-      setMovieData(movieList)
-      setLoading(false)
+      setMovieData(movieList);
+      setLoading(false);
     }
-  }, [movieList])
+  }, [movieList]);
   const handleComingSoon = () => {
-    navigate('/phim-sap-chieu')
-  }
+    navigate("/phim-sap-chieu");
+  };
   return (
     <div className="all-movie-page">
       <div className="movie-header-container">
@@ -35,8 +35,11 @@ const AllMoviePage = () => {
           className="movie-section-title upcoming"
           onClick={() => handleComingSoon()}
         >
-          📅 Phim sắp chiếu{' '}
-          <DoubleRightOutlined className="arrow-icon-all-movie" />
+          📅 Phim sắp chiếu{" "}
+          <DoubleRightOutlined
+            onClick={() => handleComingSoon()}
+            className="arrow-icon-all-movie"
+          />
         </h2>
       </div>
 
@@ -58,15 +61,15 @@ const AllMoviePage = () => {
               total={12}
               pageSize={10}
               onChange={(newPage) => {
-                setPage(newPage)
-                setLoading(true)
+                setPage(newPage);
+                setLoading(true);
                 dispatch(
                   getAllMovie({
-                    status: 'now_showing',
+                    status: "now_showing",
                     page: newPage,
-                    limit: 12
+                    limit: 12,
                   })
-                )
+                );
               }}
               showSizeChanger={false}
             />
@@ -76,7 +79,7 @@ const AllMoviePage = () => {
         <Empty description="No movies found" />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default AllMoviePage
+export default AllMoviePage;

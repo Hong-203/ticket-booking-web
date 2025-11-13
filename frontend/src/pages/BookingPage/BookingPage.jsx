@@ -1,52 +1,52 @@
-import React, { useEffect, useState } from 'react'
-import CinemaLayout from '../../components/CinemaLayout/CinemaLayout'
-import MovieTicket from '../../components/MovieTicket/MovieTicket'
-import { useParams } from 'react-router-dom'
-import './BookingPage.css'
-import { useDispatch, useSelector } from 'react-redux'
-import { getAllShownIn } from '../../stores/ShownIn/shownInApis'
-import ConcessionItems from '../../components/ConcessionItems/ConcessionItems'
+import React, { useEffect, useState } from "react";
+import CinemaLayout from "../../components/CinemaLayout/CinemaLayout";
+import MovieTicket from "../../components/MovieTicket/MovieTicket";
+import { useParams } from "react-router-dom";
+import "./BookingPage.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllShownIn } from "../../stores/ShownIn/shownInApis";
+import ConcessionItems from "../../components/ConcessionItems/ConcessionItems";
 
 const BookingPage = () => {
-  const { movieId, hallId, showtimeId, slug } = useParams()
-  const [movieInfo, setMovieInfo] = useState({})
-  const [selectedSeats, setSelectedSeats] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const shownInList = useSelector((state) => state.shownIn.shownInList || [])
-  const dispatch = useDispatch()
-  const [cart, setCartItems] = useState({})
+  const { movieId, hallId, showtimeId, slug } = useParams();
+  const [movieInfo, setMovieInfo] = useState({});
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const shownInList = useSelector((state) => state.shownIn.shownInList || []);
+  const dispatch = useDispatch();
+  const [cart, setCartItems] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true)
-        const query = `movie_id=${movieId}&hall_id=${hallId}&showtime_id=${showtimeId}`
-        await dispatch(getAllShownIn(query))
+        setIsLoading(true);
+        const query = `movie_id=${movieId}&hall_id=${hallId}&showtime_id=${showtimeId}`;
+        await dispatch(getAllShownIn(query));
       } catch (err) {
-        setError('Failed to fetch movie information')
+        setError("Failed to fetch movie information");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchData()
-  }, [dispatch, movieId, hallId, showtimeId])
+    };
+    fetchData();
+  }, [dispatch, movieId, hallId, showtimeId]);
 
   useEffect(() => {
     if (shownInList.length > 0) {
-      setMovieInfo(shownInList[0])
+      setMovieInfo(shownInList[0]);
     }
-  }, [shownInList])
+  }, [shownInList]);
 
   if (isLoading) {
-    return <div className="booking-page">Loading...</div>
+    return <div className="booking-page">Loading...</div>;
   }
 
   if (error) {
-    return <div className="booking-page">{error}</div>
+    return <div className="booking-page">{error}</div>;
   }
 
-  console.log('cart', cart)
+  console.log("cart", cart);
 
   return (
     <div className="booking-page">
@@ -92,7 +92,7 @@ const BookingPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BookingPage
+export default BookingPage;

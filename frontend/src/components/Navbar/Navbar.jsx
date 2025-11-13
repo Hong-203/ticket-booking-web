@@ -28,6 +28,7 @@ const Navbar = () => {
   const isLoggedIn = storedUser && storedUser.token;
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // State quản lý việc hiển thị thanh tìm kiếm nổi
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
@@ -76,20 +77,39 @@ const Navbar = () => {
     dispatch(setSelectedTheatre(theatreId));
   };
 
+  // Hàm BẬT/TẮT overlay tìm kiếm
   const handleSearchToggle = () => {
-    setShowSearch(!showSearch);
-    setSearchValue("");
+    // Nếu đang mở, đóng lại và xóa giá trị tìm kiếm
+    if (showSearch) {
+      setShowSearch(false);
+      setSearchValue("");
+    } else {
+      // Nếu đang đóng, mở ra
+      setShowSearch(true);
+    }
   };
 
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
 
+  // Xử lý khi nhấn Enter HOẶC nhấn icon Search
   const handleSearchSubmit = (e) => {
-    if (e.key === "Enter" && searchValue.trim()) {
+    // Sử dụng onPressEnter của Input (e.key === 'Enter') hoặc click icon (e.type === 'click')
+    if ((e.key === "Enter" || e.type === "click") && searchValue.trim()) {
       dispatch(getAllMovie({ page: 1, limit: 12, search: searchValue }));
       // ✅ Chuyển hướng đến trang kết quả
       navigate(`/search?search=${encodeURIComponent(searchValue)}`);
+      setShowSearch(false); // Tự động đóng overlay sau khi tìm kiếm
+      setSearchValue(""); // Xóa giá trị
+    }
+  };
+
+  // Xử lý khi Input mất focus
+  const handleInputBlur = () => {
+    // Tắt thanh tìm kiếm nếu người dùng bỏ focus và không có giá trị
+    if (!searchValue.trim()) {
+      setShowSearch(false);
     }
   };
 
@@ -99,6 +119,40 @@ const Navbar = () => {
 
   return (
     <header className="navbar-header">
+      {/* ======================================= */}
+      {/* 1. OVERLAY TÌM KIẾM (Chế độ NỔI) */}
+      {/* ======================================= */}
+      {showSearch && (
+        <div className="search-overlay" onClick={handleSearchToggle}>
+          <div
+            className="search-input-container"
+            // Ngăn chặn sự kiện click từ overlay lan truyền vào input container
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Input
+              placeholder="Tìm kiếm phim..."
+              value={searchValue}
+              onChange={handleSearchChange}
+              onPressEnter={handleSearchSubmit}
+              onBlur={handleInputBlur}
+              autoFocus
+              className="overlay-search-input"
+              // Tăng độ rộng Input
+              style={{ width: "80%" }}
+              suffix={
+                <CloseOutlined
+                  className="search-close-icon"
+                  onClick={handleSearchToggle} // Click icon đóng overlay
+                />
+              }
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ======================================= */}
+      {/* 2. NỘI DUNG NAVBAR CHÍNH */}
+      {/* ======================================= */}
       <Row align="middle" justify="space-between" style={{ width: "100%" }}>
         {/* Phần 1: Logo */}
         <Col>
@@ -107,12 +161,13 @@ const Navbar = () => {
           </Link>
         </Col>
 
+        {/* Menu Toggle */}
         <Col className="menu-toggle-col">
           <button className="btn-menu" onClick={handleMenuToggle}>
             {isMenuOpen ? (
-              <CloseOutlined className="menu-icon" /> // Dùng dấu X khi mở
+              <CloseOutlined className="menu-icon" />
             ) : (
-              <MenuOutlined className="menu-icon" /> // Dùng 3 gạch ngang khi đóng
+              <MenuOutlined className="menu-icon" />
             )}
           </button>
         </Col>
@@ -127,8 +182,7 @@ const Navbar = () => {
               <ul className="nav-items">
                 <li>
                   <Link className="nav-item" to="/" onClick={handleMenuToggle}>
-                    {" "}
-                    Trang chủ{" "}
+                    Trang chủ
                   </Link>
                 </li>
                 <li>
@@ -137,8 +191,7 @@ const Navbar = () => {
                     to="/theatre"
                     onClick={handleMenuToggle}
                   >
-                    {" "}
-                    Rạp chiếu{" "}
+                    Rạp chiếu
                   </Link>
                 </li>
                 <li>
@@ -147,30 +200,9 @@ const Navbar = () => {
                     to="/aboutus"
                     onClick={handleMenuToggle}
                   >
-                    {" "}
-                    Về chúng tôi{" "}
+                    Về chúng tôi
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    className="nav-item"
-                    to="/phim-dang-cong-chieu"
-                    onClick={handleMenuToggle}
-                  >
-                    {" "}
-                    Đang công chiếu{" "}
-                  </Link>
-                </li>
-                {/* <li>
-                  <Link
-                    className="nav-item"
-                    to="/phim-sap-chieu"
-                    onClick={handleMenuToggle}
-                  >
-                    {" "}
-                    Sắp công chiếu{" "}
-                  </Link>
-                </li> */}
                 {isAdmin && (
                   <li>
                     <Link
@@ -178,23 +210,19 @@ const Navbar = () => {
                       to="/admin"
                       onClick={handleMenuToggle}
                     >
-                      {" "}
-                      Admin{" "}
+                      Admin
                     </Link>
                   </li>
                 )}
               </ul>
             </Col>
 
-            {/* Phần 3: User / Sign in / Dropdowns */}
+            {/* Phần 3: User / Sign in / Dropdowns / Search Button */}
             <Col className="nav-auth-controls">
               {isLoggedIn ? (
                 <Row align="middle" gutter={[10, 10]} wrap={true}>
-                  {" "}
-                  {/* Thêm gutter dọc */}
                   <Col className="hidden-mobile">
-                    {" "}
-                    {/* Ẩn khu vực này trên mobile, sẽ đưa vào menu-open */}
+                    {/* Selects giữ nguyên */}
                     <Select
                       value={selectedLocation}
                       onChange={handleLocationChange}
@@ -227,33 +255,21 @@ const Navbar = () => {
                       </Select>
                     )}
                   </Col>
-                  {/* Icons và Username khi đăng nhập */}
                   <Col>
                     <Row align="middle" gutter={10}>
+                      {/* NÚT MỞ SEARCH OVERLAY */}
                       <Col>
-                        {showSearch ? (
-                          <Input
-                            placeholder="Tìm kiếm phim..."
-                            value={searchValue}
-                            onChange={handleSearchChange}
-                            onKeyDown={handleSearchSubmit}
-                            onBlur={() => !searchValue && setShowSearch(false)}
-                            autoFocus
-                            style={{ width: 200 }}
-                            prefix={<SearchOutlined />}
-                          />
-                        ) : (
-                          <SearchOutlined
-                            onClick={handleSearchToggle}
-                            className="search-icon-nav"
-                            style={{
-                              fontSize: "20px",
-                              color: "#000",
-                              cursor: "pointer",
-                            }}
-                          />
-                        )}
+                        <SearchOutlined
+                          onClick={handleSearchToggle}
+                          className="search-icon-nav"
+                          style={{
+                            fontSize: "20px",
+                            color: "#000",
+                            cursor: "pointer",
+                          }}
+                        />
                       </Col>
+                      {/* User Info và Icons */}
                       <Col className="hidden-mobile">
                         <p className="nav-signed-name">{storedUser.username}</p>
                       </Col>
@@ -287,28 +303,16 @@ const Navbar = () => {
                 </Row>
               ) : (
                 <Row align="middle" gutter={10}>
+                  {/* NÚT MỞ SEARCH OVERLAY (Chưa Đăng nhập) */}
                   <Col>
-                    {showSearch ? (
-                      <Input
-                        placeholder="Tìm kiếm phim..."
-                        value={searchValue}
-                        onChange={handleSearchChange}
-                        onKeyDown={handleSearchSubmit}
-                        onBlur={() => !searchValue && setShowSearch(false)}
-                        autoFocus
-                        style={{ width: 200 }}
-                        prefix={<SearchOutlined />}
-                      />
-                    ) : (
-                      <SearchOutlined
-                        onClick={handleSearchToggle}
-                        style={{
-                          fontSize: "20px",
-                          color: "#000",
-                          cursor: "pointer",
-                        }}
-                      />
-                    )}
+                    <SearchOutlined
+                      onClick={handleSearchToggle}
+                      style={{
+                        fontSize: "20px",
+                        color: "#000",
+                        cursor: "pointer",
+                      }}
+                    />
                   </Col>
                   <Col>
                     <Link to="/signup" onClick={handleMenuToggle}>

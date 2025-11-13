@@ -30,7 +30,7 @@ const SearchPage = () => {
       {loading ? (
         <Spin style={{ display: "block", margin: "2rem auto" }} size="large" />
       ) : movieList.length > 0 ? (
-        <div className="search-result-grid">
+        <div className="movie-grid">
           {movieList.map((movie) => (
             <CollectionCard key={movie.id} {...movie} />
           ))}

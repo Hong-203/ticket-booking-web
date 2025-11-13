@@ -52,7 +52,7 @@
 .res-signup-title {
   font-size: 24px;
   font-weight: bold;
-  color: white;
+  color: rgb(255, 153, 0);
   margin-bottom: 24px;
   text-align: center;
 }
@@ -119,15 +119,15 @@
   gap: 12px;
 }
 
-.res-input-padding {
+/* .res-input-padding {
   padding: 0 16px;
-}
+} */
 
 .res-signup-button {
   width: 100%;
-  background-color: #22c55e;
+  background-color: rgb(233, 140, 1);
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   padding: 10px 16px;
   margin-top: 16px;

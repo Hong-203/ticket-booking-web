@@ -10,19 +10,19 @@
 
 .ad-slide {
   width: 100%;
-  height: 600px;
+  height: 460px;
   position: relative;
   padding-top: 63px;
 }
 .ad-slide-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 1297px;
+  height: 397px;
+  object-fit: fill;
 }
 .ad-slide-bg {
   width: 100vw;
   height: 100vh;
-  background-size:cover;
+  background-size: cover;
   object-fit: fill;
   background-position: center;
   background-position: center;
@@ -30,17 +30,17 @@
 }
 
 .ad-banner-container .slick-dots {
-  bottom: 20px !important; 
-  z-index: 10;             
+  bottom: 20px !important;
+  z-index: 10;
 }
 
 .ad-banner-container .slick-dots li button {
-  background: #fff !important;  
+  background: #cfc0a2 !important;
   opacity: 0.6;
 }
 
 .ad-banner-container .slick-dots li.slick-active button {
-  background: #1890ff !important; 
+  background: #1890ff !important;
   opacity: 1;
 }
 

@@ -105,7 +105,9 @@
   border-bottom: 2px solid #f0f2f5;
   padding-bottom: 10px;
 }
-
+.text-detail-movie-ss {
+  color: #fff;
+}
 .ant-typography.text-detail-movie-ss.css-dev-only-do-not-override-mc1tut,
 .text-movie-dt_ss {
   color: #fff !important;
@@ -161,50 +163,131 @@
 }
 
 /* Responsive adjustments */
+/* ... (Các CSS phía trên giữ nguyên) ... */
+
+/* Responsive adjustments */
 @media (max-width: 992px) {
+  /* Cho máy tính bảng và màn hình nhỏ hơn */
   .movie-detail__hero {
-    height: auto;
-    padding: 32px;
+    height: auto; /* Chiều cao tự động */
+    min-height: 800px;
+    padding: 32px 24px;
   }
 
+  /* Thay đổi flex-direction để poster và info xếp chồng lên nhau */
   .movie-detail__hero-content {
     flex-direction: column;
     text-align: center;
+    gap: 24px;
   }
 
   .movie-detail__hero-info {
     text-align: center;
+    padding-top: 10px; /* Thêm chút khoảng cách */
   }
 
   .movie-detail__hero-poster {
-    margin-bottom: 20px;
+    width: 250px; /* Giảm kích thước poster */
+    margin-bottom: 0;
   }
 
   .movie-detail__title {
-    font-size: 2.5em !important;
+    font-size: 2.8em !important; /* Giảm cỡ chữ */
+    margin-bottom: 5px !important;
+  }
+
+  .movie-detail__meta {
+    font-size: 1.1em;
+  }
+
+  .movie-detail__synopsis-short {
+    max-width: none; /* Cho phép nó tràn ra */
   }
 
   .movie-detail__content {
-    padding: 32px;
-    margin-top: 0;
-    border-radius: 0;
+    padding: 32px 24px;
+    margin-top: -50px; /* Vẫn overlap nhẹ */
+    border-radius: 0 0 12px 12px;
+  }
+
+  .movie-detail__hero-overlay {
+    /* Điều chỉnh gradient cho phù hợp với bố cục xếp chồng */
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+}
+
+@media (max-width: 768px) {
+  /* Cho điện thoại màn hình lớn */
+  .movie-detail__wrapper {
+    padding: 0; /* Loại bỏ padding ngang nếu có */
+  }
+
+  .movie-detail__hero-poster {
+    width: 200px; /* Tiếp tục giảm kích thước poster */
   }
 }
 
 @media (max-width: 576px) {
+  /* Cho điện thoại */
+  .movie-detail__wrapper {
+    /* Quan trọng: đảm bảo không có padding-top thừa */
+    padding: 0;
+  }
+
   .movie-detail__hero {
-    padding: 24px;
+    /* Đảm bảo chiều cao tối thiểu hợp lý, loại bỏ margin-top sai */
+    min-height: 650px; /* Tăng nhẹ để có không gian cho poster và chữ */
+    padding: 20px 15px;
+    margin-top: 0; /* KHẮC PHỤC LỖI KHOẢNG TRẮNG */
+  }
+
+  .movie-detail__hero-content {
+    gap: 15px;
+    margin: 200px 0;
   }
 
   .movie-detail__hero-poster {
-    width: 200px;
+    width: 150px; /* Poster nhỏ gọn hơn */
   }
 
   .movie-detail__title {
     font-size: 2em !important;
+    margin-bottom: 5px !important;
+  }
+
+  /* Bổ sung: Poster và Info xếp chồng lên nhau */
+  .movie-detail__hero-content {
+    flex-direction: column;
+    text-align: center;
+    align-items: center; /* căn giữa mọi thứ */
+  }
+
+  .movie-detail__hero-overlay {
+    /* Sửa lại gradient cho bố cục dọc */
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.4) 80%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+
+  .movie-buy-ticket {
+    text-align: center; /* Căn giữa nút Mua vé */
+  }
+
+  .movie-buy-ticket .ant-btn {
+    width: 100%; /* Nút Mua vé chiếm hết chiều ngang */
+    max-width: 300px; /* Giới hạn để nút không quá to trên tablet nhỏ */
   }
 
   .movie-detail__content {
-    padding: 24px;
+    padding: 20px 15px;
+    margin-top: -50px; /* Có thể giảm overlap nhẹ */
   }
 }

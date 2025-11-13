@@ -79,9 +79,8 @@ export class UsersController {
     @Request() req,
     @Body() updateData: UpdateUserDto,
   ) {
-    const requestingUserId = req.user.sub;
+    const requestingUserId = req.user.userId;
     const requestingRole = req.user.role;
-
     if (requestingRole !== 'admin' && requestingUserId !== id) {
       throw new ForbiddenException('You can only update your own account');
     }
@@ -100,7 +99,7 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin', 'customer')
   async deleteUser(@Param('id') id: string, @Request() req) {
-    const requestingUserId = req.user.sub;
+    const requestingUserId = req.user.userId;
     const requestingRole = req.user.role;
 
     if (requestingRole !== 'admin' && requestingUserId !== id) {

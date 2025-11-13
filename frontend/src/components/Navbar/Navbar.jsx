@@ -317,7 +317,7 @@ const Navbar = () => {
                   <Col>
                     <Link to="/signup" onClick={handleMenuToggle}>
                       <button
-                        style={{ width: "135px" }}
+                        style={{ width: "107px" }}
                         className="btn-auth btn-signup"
                       >
                         Đăng ký
@@ -327,7 +327,7 @@ const Navbar = () => {
                   <Col>
                     <Link to="/login" onClick={handleMenuToggle}>
                       <button
-                        style={{ width: "135px" }}
+                        style={{ width: "107px" }}
                         className="btn-auth btn-login"
                       >
                         Đăng nhập

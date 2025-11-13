@@ -1,41 +1,41 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { getMovieBySlug } from '../../stores/Movie/movieApis'
-import { Tag, Typography, Spin, Row, Col, Button } from 'antd' // Removed Descriptions, Image, Divider
-import './MovieDetail.css'
-import bgDetail from '../../assets/image.png'
-import { toast } from 'react-toastify'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getMovieBySlug } from "../../stores/Movie/movieApis";
+import { Tag, Typography, Spin, Row, Col, Button } from "antd"; // Removed Descriptions, Image, Divider
+import "./MovieDetail.css";
+import bgDetail from "../../assets/image.png";
+import { toast } from "react-toastify";
 
-const { Title, Paragraph, Text } = Typography
+const { Title, Paragraph, Text } = Typography;
 
 const MovieDetail = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { slug } = useParams()
-  const movieDetail = useSelector((state) => state.movie.movieDetails)
-  const [loading, setLoading] = useState(true)
-    const storedUser = JSON.parse(localStorage.getItem('user'))
- const currentUserId = storedUser && storedUser.id
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { slug } = useParams();
+  const movieDetail = useSelector((state) => state.movie.movieDetails);
+  const [loading, setLoading] = useState(true);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const currentUserId = storedUser && storedUser.id;
   useEffect(() => {
-    dispatch(getMovieBySlug(slug)).finally(() => setLoading(false))
-  }, [dispatch, slug])
+    dispatch(getMovieBySlug(slug)).finally(() => setLoading(false));
+  }, [dispatch, slug]);
 
   if (loading || !movieDetail) {
-    return <Spin className="movie-detail__loading" size="large" />
+    return <Spin className="movie-detail__loading" size="large" />;
   }
 
   const handleByShownIn = () => {
-    const storedUser = JSON.parse(localStorage.getItem('user'))
-    const currentUserId = storedUser && storedUser.id
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = storedUser && storedUser.id;
 
     if (!currentUserId) {
-      toast.error('Vui lòng đăng nhập trước khi đặt vé!')
-      navigate('/login')
+      toast.error("Vui lòng đăng nhập trước khi đặt vé!");
+      navigate("/login");
     } else {
-      navigate(`/movie-show-time/${slug}`)
+      navigate(`/movie-show-time/${slug}`);
     }
-  }
+  };
 
   const {
     name,
@@ -48,8 +48,8 @@ const MovieDetail = () => {
     release_date,
     trailer_url,
     directors,
-    genres
-  } = movieDetail
+    genres,
+  } = movieDetail;
 
   return (
     <div className="movie-detail__wrapper">
@@ -70,8 +70,8 @@ const MovieDetail = () => {
                 {name}
               </Title>
               <Paragraph className="movie-detail__meta">
-                <Text className="text-detail-movie-ss">{duration}</Text> |{' '}
-                <Text className="text-detail-movie-ss">{language}</Text> |{' '}
+                <Text className="text-detail-movie-ss">{duration}</Text> |{" "}
+                <Text className="text-detail-movie-ss">{language}</Text> |{" "}
                 <Text className="text-detail-movie-ss">DBMI: {rating}</Text>
               </Paragraph>
               <div className="movie-detail__tags">
@@ -106,14 +106,14 @@ const MovieDetail = () => {
               {synopsis}
             </Paragraph>
 
-            <Title level={3} style={{ marginTop: '32px' }}>
+            <Title level={3} style={{ marginTop: "32px" }}>
               Diễn viên & đoàn làm phim
             </Title>
             <div className="movie-detail__section">
               <Text strong>Diễn viên:</Text> {top_cast}
             </div>
             <div className="movie-detail__section">
-              <Text strong>Đạo diễn:</Text>{' '}
+              <Text strong>Đạo diễn:</Text>{" "}
               {directors?.map((d, i) => (
                 <Tag color="blue" key={i}>
                   {d.director}
@@ -139,14 +139,14 @@ const MovieDetail = () => {
 
             {trailer_url && (
               <>
-                <Title level={3} style={{ marginTop: '32px' }}>
+                <Title level={3} style={{ marginTop: "32px" }}>
                   Trailer
                 </Title>
                 <div className="movie-detail__trailer-wrapper">
                   <iframe
                     width="100%"
                     height="250"
-                    src={trailer_url.replace('watch?v=', 'embed/')}
+                    src={trailer_url.replace("watch?v=", "embed/")}
                     title={`${name} Trailer`}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -159,7 +159,7 @@ const MovieDetail = () => {
         </Row>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MovieDetail
+export default MovieDetail;

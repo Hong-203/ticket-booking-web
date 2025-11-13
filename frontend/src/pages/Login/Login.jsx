@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { useDispatch } from "react-redux";
+// Import Ant Design components
+import { Form, Input, Button, message } from "antd";
 import logo from "../../assets/Cinema-Logo-Background-PNG-Image.png";
 import movieBackgroundVideo from "../../assets/video2.mp4";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
-import TextInput from "../../components/Icons/TextInput";
-import PasswordInput from "../../components/Icons/PasswordInput";
 import { login } from "../../stores/Users/userApis";
-import { useDispatch } from "react-redux";
 
 const Login = ({ setIsAdmin }) => {
   const [identifier, setIdentifier] = useState("");
@@ -19,15 +18,12 @@ const Login = ({ setIsAdmin }) => {
   const dispatch = useDispatch();
   const baseURL = import.meta.env.VITE_BACKEND_URL;
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    const values = {
-      identifier,
-      password,
-    };
+  // Thay thế handleLogin cũ bằng onFinish của Antd Form
+  const onFinish = async (values) => {
+    // values chứa identifier và password từ form
 
     try {
+      // Logic đăng nhập (Giữ nguyên)
       await dispatch(login(values));
       toast.success("Đăng nhập thành công!");
 
@@ -63,60 +59,115 @@ const Login = ({ setIsAdmin }) => {
       />
       <div className="overlay" />
 
-      <div className="help-button">
-        <button>Trợ giúp?</button>
-      </div>
-
-      <div className="login-box">
-        <div className="form-content">
+      {/* Box đăng nhập mới: nhỏ gọn và căn giữa, sử dụng class chung để tái sử dụng style */}
+      <div className="res-signup-box">
+        <div className="res-signup-content">
           <div className="logo-container">
-            <img src={logo} alt="Logo" />
+            <img src={logo} alt="Logo" className="res-logo" />
           </div>
           <h2 className="res-signup-title">Đăng nhập</h2>
 
-          <form onSubmit={handleLogin}>
-            <TextInput
-              label="Email hoặc Số điện thoại"
-              placeholder="Nhập email hoặc số điện thoại"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-            />
-            <PasswordInput
-              label="Mật khẩu"
-              placeholder="Nhập mật khẩu"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          {/* Thay thế form HTML bằng Ant Design Form */}
+          <Form
+            name="login"
+            onFinish={onFinish}
+            layout="vertical"
+            initialValues={{ identifier, password }}
+            className="res-signup-form" // Dùng chung class form với Register để áp dụng style dark theme
+          >
+            {/* Email/SĐT */}
+            <Form.Item
+              name="identifier"
+              rules={[
+                { required: true, message: "Vui lòng nhập Email hoặc SĐT!" },
+              ]}
+              style={{ marginBottom: "20px" }} // Tăng khoảng cách cho dễ nhìn
+            >
+              <Input
+                placeholder="Nhập email hoặc số điện thoại"
+                prefix={<Icon icon="ant-design:user-outlined" />}
+                size="large"
+                onChange={(e) => setIdentifier(e.target.value)}
+              />
+            </Form.Item>
+
+            {/* Mật khẩu */}
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+              style={{ marginBottom: "10px" }}
+            >
+              <Input.Password
+                placeholder="Nhập mật khẩu"
+                prefix={
+                  <Icon
+                    style={{ color: "#fff" }}
+                    icon="ant-design:lock-outlined"
+                  />
+                }
+                size="large"
+                onChange={(e) => setPassword(e.target.value)}
+                iconRender={(visible) =>
+                  visible ? (
+                    <Icon
+                      icon="ant-design:eye-outlined"
+                      style={{ color: "#fff" }}
+                    />
+                  ) : (
+                    <Icon
+                      icon="ant-design:eye-invisible-outlined"
+                      style={{ color: "#fff" }}
+                    />
+                  )
+                }
+              />
+            </Form.Item>
+
             <div className="forgot-link">
-              <Link to="/forgot-password">Quên mật khẩu?</Link>
+              <Link to="/forgot-password" className="res-login-link">
+                Quên mật khẩu?
+              </Link>
             </div>
 
-            <button type="submit" className="login-button">
-              Đăng nhập
-            </button>
-          </form>
+            {/* Nút Đăng nhập */}
+            <Form.Item style={{ marginBottom: 0 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="res-signup-button" // Dùng chung class nút cam
+                size="large"
+                block
+              >
+                Đăng nhập
+              </Button>
+            </Form.Item>
+          </Form>
 
-          <div className="separator">
+          <div className="res-separator">
             <hr />
-            <span>hoặc</span>
+            <span>HOẶC</span>
             <hr />
           </div>
 
-          <div className="social-login">
-            <button className="google-button" onClick={handleGoogleLogin}>
-              Đăng nhập bằng
-              <Icon icon="logos:google-icon" className="icon" />
-            </button>
-            {/* <button className="facebook-button">
-              Đăng nhập bằng
-              <Icon icon="logos:facebook" className="icon" />
-            </button> */}
+          <div className="res-social-buttons">
+            <Button
+              className="res-social-button res-google"
+              onClick={handleGoogleLogin}
+              block
+              size="large"
+            >
+              <Icon icon="logos:google-icon" className="res-icon" width={20} />
+              Đăng nhập với Google
+            </Button>
           </div>
         </div>
 
-        <div className="signup-section">
+        <div className="res-bottom-box">
           <p>
-            Chưa có tài khoản? <Link to="/signup">Đăng ký ngay</Link>
+            Chưa có tài khoản?{" "}
+            <Link to="/signup" className="res-login-link">
+              Đăng ký ngay
+            </Link>
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 .ticket-container {
   max-width: 450px;
   /* margin: 20px auto; */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .movie-ticket {
@@ -14,7 +14,7 @@
 }
 
 .movie-ticket::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -232,12 +232,12 @@
 }
 
 .icon-arrow-left::before {
-  content: '←';
+  content: "←";
   font-size: 1.1rem;
 }
 
 .icon-arrow-right::before {
-  content: '→';
+  content: "→";
   font-size: 1.1rem;
 }
 
@@ -263,4 +263,37 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* ==================================== */
+/* RESPONSIVE MovieTicket */
+/* ==================================== */
+
+@media (max-width: 576px) {
+  .movie-title {
+    font-size: 1.2em !important;
+  }
+
+  .movie-poster {
+    width: 60px;
+    height: 90px;
+  }
+
+  .ticket-header {
+    gap: 10px;
+  }
+
+  .booking-actions {
+    flex-direction: column; /* Đưa nút xuống dòng trên mobile nhỏ */
+  }
+
+  .btn-back,
+  .btn-confirm {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  .price-tag {
+    font-size: 1.3em;
+  }
 }

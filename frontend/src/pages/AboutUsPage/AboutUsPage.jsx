@@ -9,10 +9,10 @@ import {
 
 export default function AboutUsPage() {
   const stats = [
-    { label: "Rạp chiếu phim", value: 4, prefix: "🏢", color: "#ff6f61" },
-    { label: "Thành phố", value: 1, prefix: "🌆", color: "#6a5acd" },
+    { label: "Rạp chiếu phim", value: 5, prefix: "🏢", color: "#ff6f61" },
+    { label: "Thành phố", value: 2, prefix: "🌆", color: "#6a5acd" },
     { label: "Khách hàng", value: "2.5M+", prefix: "👥", color: "#ffb400" },
-    { label: "Năm hoạt động", value: 1, prefix: "📅", color: "#00bfff" },
+    { label: "Năm hoạt động", value: 5, prefix: "📅", color: "#00bfff" },
   ];
 
   const milestones = [
@@ -39,7 +39,7 @@ export default function AboutUsPage() {
     {
       year: "",
       title: "Hệ thống quản lý toàn diện",
-      desc: "Triển khai nền tảng web, app mobile và quản lý desktop tích hợp",
+      desc: "Triển khai nền tảng website, app mobile và quản lý desktop tích hợp",
     },
   ];
 
@@ -101,7 +101,7 @@ export default function AboutUsPage() {
             margin: "0 auto",
           }}
         >
-          Khám phá hành trình 15 năm mang đến những trải nghiệm điện ảnh tuyệt
+          Khám phá hành trình 5 năm mang đến những trải nghiệm điện ảnh tuyệt
           vời cho hàng triệu khán giả Việt Nam
         </p>
       </div>

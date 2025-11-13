@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   gap: 1.6rem;
-  margin-top: 4rem;
+  /* margin-top: 4rem; */
   flex-wrap: wrap;
 }
 
@@ -98,7 +98,7 @@
 
 .customer-img {
   height: 6.8rem;
-  width: 8.8rem;
+  width: 6.8rem;
   /* border-radius: 50%; */
   /* border: 3px solid #1a1d2c; */
   /* margin-right: -1.6rem; */
@@ -110,7 +110,7 @@
 }
 
 .hero-review-text {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #fff;
 }

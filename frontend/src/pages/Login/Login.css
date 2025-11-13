@@ -1,12 +1,12 @@
-/* General layout */
-.login-container {
+/* General layout (Giữ nguyên) */
+.login-container,
+.res-signup-container {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(to right, #1f2937, #000, #1f2937);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   overflow: hidden;
 }
 
@@ -16,166 +16,208 @@
   height: 100%;
   object-fit: cover;
   z-index: 0;
+  /* Làm video nền sáng và mờ hơn */
+  filter: brightness(0.5) opacity(1.1);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  /* background-color: rgba(0, 0, 0, 0.75); */
   z-index: 1;
 }
 
-.help-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 2;
-}
+/* --- LIGHT THEME BOX --- */
 
-.help-button button {
-  background: #1f2937;
-  color: white;
-  padding: 6px 16px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.help-button button:hover {
-  background-color: #111827;
-}
-
-.login-box {
+.res-signup-box {
   position: relative;
-  z-index: 2;
-  background-color: #1f2937;
-  border-radius: 8px;
-  overflow: hidden;
+  z-index: 20;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  max-width: 350px;
+  max-height: 95vh;
+  /* Nền box trắng */
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow-y: auto;
+  /* Bóng đổ nhẹ nhàng hơn */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  /* Bỏ viền cam */
+  border: 1px solid #e0e0e0;
 }
 
-.form-content {
-  padding: 32px;
+.res-signup-content {
+  padding: 30px 25px 20px 25px;
 }
 
 .logo-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
-.logo-container img {
-  width: 150px;
-  height: auto;
+.res-logo {
+  height: 40px;
+  /* Bỏ filter để logo hiển thị màu sắc gốc (hoặc tối hơn) */
+  filter: none;
 }
 
-.social-login {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 16px;
+.res-signup-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: rgb(255, 153, 0); /* Giữ màu cam nổi bật */
+  margin-bottom: 25px;
+  text-align: center;
 }
 
-.google-button,
-.facebook-button {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  border: none;
+/* --- TÙY CHỈNH ANT DESIGN INPUT & BUTTON (LIGHT) --- */
+
+.res-signup-form .ant-form-item {
+  margin-bottom: 15px;
+}
+
+/* Style cho Input (LIGHT THEME) */
+.res-signup-form .ant-input-affix-wrapper,
+.res-signup-form .ant-input-affix-wrapper-focused {
+  background-color: #f7f7f7 !important; /* Nền input xám nhạt */
+  color: #333333 !important; /* Màu chữ đen */
+  border-color: #dddddd !important; /* Màu viền nhạt */
+}
+
+.res-signup-form .ant-input-prefix,
+.res-signup-form .ant-input-suffix {
+  color: #888888 !important; /* Icon xám đậm */
+}
+
+.res-signup-form .ant-input-affix-wrapper:hover {
+  border-color: #ff8c00 !important; /* Viền cam khi hover */
+}
+
+/* Custom focus style với màu cam */
+.res-signup-form .ant-input-affix-wrapper-focused {
+  border-color: rgb(255, 153, 0) !important;
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.3) !important;
+}
+
+.res-signup-form .ant-input {
+  background-color: transparent !important;
+  color: #333333 !important; /* Màu chữ đen */
+}
+
+/* Placeholder (Màu xám nhạt trên nền sáng) */
+.res-signup-form .ant-input::placeholder,
+.res-signup-form .ant-input-affix-wrapper input::placeholder {
+  color: #aaaaaa !important; /* Màu xám nhạt */
+  opacity: 1;
+}
+
+/* Tương tự cho Firefox/IE */
+.res-signup-form .ant-input:-moz-placeholder,
+.res-signup-form .ant-input-affix-wrapper input:-moz-placeholder,
+.res-signup-form .ant-input:-ms-input-placeholder,
+.res-signup-form .ant-input-affix-wrapper input:-ms-input-placeholder {
+  color: #aaaaaa !important;
+  opacity: 1;
+}
+
+/* Nút Đăng Nhập/Đăng Ký (Primary Button) */
+.res-signup-button.ant-btn-primary {
+  width: 100%;
+  background-color: rgb(233, 140, 1) !important; /* Giữ màu cam */
+  color: white !important;
+  font-size: 16px;
+  height: 40px;
+  font-weight: 600;
+  margin-top: 20px;
+  border: none !important;
   border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.google-button {
-  background: white;
-  color: #1f2937;
+.res-signup-button.ant-btn-primary:not([disabled]):hover {
+  background-color: #ff8c00 !important;
 }
 
-.google-button:hover {
-  background-color: #e5e7eb;
-}
-
-.facebook-button {
-  background: #1877f2;
-  color: white;
-}
-
-.facebook-button:hover {
-  background-color: #145db2;
-}
-
-.icon {
-  margin-left: 8px;
-}
-
-.separator {
+/* Social Login Button */
+.res-social-buttons .res-social-button.ant-btn {
+  width: 100%;
   display: flex;
   align-items: center;
-  margin: 12px 0;
-  color: #9ca3af;
+  justify-content: center;
+  gap: 10px;
+  background-color: #f7f7f7; /* Nền xám nhạt */
+  color: #333333; /* Chữ đen */
+  height: 40px;
+  font-size: 15px;
+  border: 1px solid #dddddd;
+  border-radius: 6px;
+  transition: background-color 0.3s;
 }
 
-.separator hr {
+.res-social-buttons .res-social-button.ant-btn:hover {
+  background-color: #e0e0e0;
+  color: #333333;
+}
+
+.res-icon {
+  margin-left: 5px;
+}
+
+/* Separator */
+.res-separator {
+  display: flex;
+  align-items: center;
+  margin: 25px 0;
+  color: #cccccc; /* Màu xám nhạt */
+}
+
+.res-separator hr {
   flex-grow: 1;
-  border: 0.5px solid #374151;
+  border: none;
+  border-top: 1px solid #e0e0e0; /* Đường kẻ nhạt */
 }
 
-.separator span {
-  margin: 0 12px;
+.res-separator span {
+  margin: 0 15px;
+  font-size: 14px;
+  color: #888888; /* Chữ xám */
 }
 
-/* Form inputs are styled inside TextInput/PasswordInput */
+/* Forgot Link */
 .forgot-link {
   text-align: right;
-  margin-top: 16;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
-.forgot-link a {
+.forgot-link .res-login-link {
   font-size: 14px;
-  color: #9ca3af;
+  color: #888888; /* Màu xám */
   text-decoration: none;
 }
-
-.forgot-link a:hover {
-  color: white;
+.forgot-link .res-login-link:hover {
+  color: #333333; /* Chữ đen khi hover */
 }
 
-.login-button {
-  width: 100%;
-  /* background-color: #22c55e;
-   */
-  background-color: rgb(233, 140, 1);
-  color: white;
-  padding: 10px 16px;
-  font-weight: 600;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.login-button:hover {
-  background-color: #16a34a;
-}
-
-.signup-section {
-  background-color: #374151;
+/* Signup/Login Link Section (Chân box) */
+.res-bottom-box {
+  background-color: #f0f0f0; /* Nền xám nhạt hơn */
+  padding: 15px 24px;
   text-align: center;
-  padding: 16px;
+  border-top: 1px solid #e0e0e0;
 }
 
-.signup-section a {
-  color: #22c55e;
+.res-bottom-box p {
+  color: #333333; /* Chữ đen */
+  font-size: 14px;
+  margin: 0;
+}
+
+.res-bottom-box .res-login-link {
+  color: rgb(35, 155, 14); /* Màu cam nổi bật */
   font-weight: bold;
+  text-decoration: underline;
   margin-left: 4px;
-  text-decoration: none;
 }
 
-.signup-section a:hover {
-  color: #16a34a;
+.res-bottom-box .res-login-link:hover {
+  color: #ff8c00;
 }

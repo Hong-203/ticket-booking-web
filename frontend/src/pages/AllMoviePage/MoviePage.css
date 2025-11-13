@@ -1,7 +1,9 @@
 .all-movie-page {
   padding: 100px 20px;
-  width: 1200px;
+  /* Giữ max-width để màn hình lớn không bị quá rộng */
   max-width: 1200px;
+  /* Loại bỏ width cố định 1200px. Dùng 100% thay thế */
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -13,6 +15,7 @@
 
 .movie-grid {
   display: grid;
+  /* Dùng auto-fit và minmax để tự động điều chỉnh số cột */
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
@@ -29,7 +32,10 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 24px;
+  align-items: center; /* Đảm bảo các tiêu đề nằm ngang hàng */
 }
+
+/* Kích thước tiêu đề và hover giữ nguyên */
 .arrow-icon-all-movie {
   font-size: 10px;
 }
@@ -37,10 +43,8 @@
   font-size: 15px;
   font-weight: 700;
   color: #000;
-  /* background: linear-gradient(90deg, #ff4b2b, #ff416c); */
   padding: 12px 0;
   border-radius: 12px;
-  /* box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: fit-content;
 }
@@ -56,4 +60,58 @@
   margin-top: 24px;
   display: flex;
   justify-content: center;
+}
+
+/* ======================================= */
+/* RESPONSIVE MEDIA QUERIES */
+/* ======================================= */
+
+@media (max-width: 992px) {
+  /* Màn hình máy tính bảng (Tablet) */
+  .all-movie-page {
+    padding: 80px 15px; /* Giảm padding */
+  }
+
+  .movie-grid {
+    /* Giảm kích thước tối thiểu của mỗi cột, có thể thành 3 cột */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Màn hình điện thoại lớn và tablet dọc */
+  .movie-header-container {
+    gap: 8px;
+  }
+
+  .movie-section-title.playing-now {
+    font-size: 20px;
+  }
+
+  .movie-section-title.upcoming {
+    font-size: 18px; /* Tăng cỡ chữ để dễ bấm hơn */
+    padding: 5px 0;
+  }
+
+  .movie-section-title {
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Màn hình điện thoại (Mobile) */
+  .all-movie-page {
+    padding: 70px 10px; /* Padding nhỏ nhất */
+  }
+
+  .movie-grid {
+    /* Giảm kích thước tối thiểu còn 150px, có thể thành 2 cột */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .movie-section-title.playing-now {
+    font-size: 18px;
+  }
 }

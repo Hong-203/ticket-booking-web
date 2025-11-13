@@ -51,7 +51,7 @@ const TheatrePage = () => {
           <Title
             level={1}
             style={{
-              color: "#ff6f61",
+              color: "#f28328ff",
               fontSize: "48px",
               marginBottom: "10px",
               textShadow: "2px 2px 4px rgba(0,0,0,0.15)",
@@ -61,7 +61,7 @@ const TheatrePage = () => {
           </Title>
           <Text
             style={{
-              color: "#333",
+              color: "#153987ff",
               fontSize: "18px",
             }}
           >
@@ -74,7 +74,7 @@ const TheatrePage = () => {
           <Title
             level={3}
             style={{
-              color: "#0077b6",
+              color: "#023697ff",
               marginBottom: "24px",
               display: "flex",
               alignItems: "center",

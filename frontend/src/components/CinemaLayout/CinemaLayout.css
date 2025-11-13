@@ -313,56 +313,55 @@
   display: inline-block;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+/* ==================================== */
+/* RESPONSIVE (Màn hình nhỏ)      */
+/* ==================================== */
 
-/* Responsive */
 @media (max-width: 768px) {
   .cinema-container {
-    padding: 10px;
+    width: 370px;
+    padding: 10px 0; /* Giảm padding ngang tối đa */
   }
 
-  .seats-in-row {
-    gap: 4px;
+  .cinema-card {
+    /* Quan trọng: Giúp Card sử dụng toàn bộ chiều rộng, kể cả padding mặc định của Antd */
+    margin: 0 10px;
   }
 
+  /* Điều chỉnh kích thước ghế nhỏ hơn để tối ưu không gian cuộn ngang */
   .seat {
-    width: 28px;
-    height: 28px;
-    font-size: 8px;
-  }
-
-  .seat.couple {
-    width: 58px;
-  }
-
-  .seat-number {
-    font-size: 8px;
-  }
-
-  .legend {
-    gap: 15px;
-  }
-
-  .legend-item {
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .seat {
-    width: 24px;
-    height: 24px;
-  }
-
-  .seat.couple {
-    width: 50px;
-  }
-
-  .seat-number {
+    width: 18px; /* Giảm từ 25px */
+    height: 18px; /* Giảm từ 25px */
+    margin: 1px;
     font-size: 7px;
+    border-radius: 3px;
+  }
+
+  .seat.couple {
+    width: 40px; /* Giảm từ 55px */
   }
 
   .row-label {
-    width: 30px;
+    width: 18px; /* Giảm từ 30px */
+    font-size: 10px;
+  }
+
+  .seat-gap {
+    width: 10px; /* Giảm khoảng cách */
+  }
+
+  .screen-text {
     font-size: 14px;
+    letter-spacing: 3px;
+  }
+
+  /* Bố cục lại Legend và Summary */
+  .legend {
+    justify-content: space-between;
+    padding: 15px 5px;
+  }
+  .legend-item {
+    margin: 5px 5px;
+    font-size: 12px;
   }
 }

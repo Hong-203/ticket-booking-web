@@ -260,7 +260,7 @@ img.logo-web-my {
 
 /* ===== AUTH BUTTONS ===== */
 .btn-auth {
-  padding: 10px 24px;
+  /* padding: 10px 24px; */
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -274,6 +274,8 @@ img.logo-web-my {
 .btn-signup {
   background: #fff;
   color: #000;
+  font-size: 10px;
+  font-weight: bold;
   border: 2px solid #fff;
 }
 
@@ -284,6 +286,8 @@ img.logo-web-my {
 }
 
 .btn-login {
+  font-size: 10px;
+  font-weight: bold;
   background: #fff;
   color: #1a1a2e;
 }

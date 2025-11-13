@@ -25,10 +25,10 @@
 
 .heading-secondary {
   color: #000;
-  font-size: 1.7rem;
+  /* font-size: 1.7rem; */
   line-height: 1.2;
   padding: 0.8rem 1.6rem;
-  font-weight: 500;
+  font-weight: bold;
   cursor: pointer;
 }
 

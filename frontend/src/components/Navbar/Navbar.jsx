@@ -156,7 +156,13 @@ const Navbar = () => {
       <Row align="middle" justify="space-between" style={{ width: "100%" }}>
         {/* Phần 1: Logo */}
         <Col>
-          <Link className="logo-container-nav" to="/">
+          <Link
+            className="logo-container-nav"
+            to="/"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             <img className="logo-web-my" src={logo} alt="CineZone Logo" />
           </Link>
         </Col>
@@ -181,7 +187,14 @@ const Navbar = () => {
             <Col className="nav-menu-links">
               <ul className="nav-items">
                 <li>
-                  <Link className="nav-item" to="/" onClick={handleMenuToggle}>
+                  <Link
+                    className="nav-item"
+                    to="/"
+                    onClick={() => {
+                      handleMenuToggle();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
                     Trang chủ
                   </Link>
                 </li>

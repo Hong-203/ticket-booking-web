@@ -12,11 +12,14 @@ import Login from "../pages/Login/Login";
 import MovieDetail from "../pages/MovieDetail/MovieDetail";
 import MovieShowtime from "../pages/MovieShowTime/MovieShowTime";
 import NotPoundPage from "../pages/NotPoundPage/NotPoundPage";
+import PaymentGuideCineZone from "../pages/PaymentGuide/PaymentGuide";
 import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
+import PrivacyPolicyCineZone from "../pages/PrivacyPolicy/PrivacyPolicy";
 import ProfilePage from "../pages/Profile/Profile";
 import Register from "../pages/Register/Register";
 import SearchPage from "../pages/SearchPage/SearchPage";
+import TermsOfServiceCineZone from "../pages/TermsOfUse/TermsOfUse";
 import TheatrePage from "../pages/TheatrePage/TheatrePage";
 
 export const routes = [
@@ -97,6 +100,21 @@ export const routes = [
     isShowHeader: true,
     path: "/aboutus",
     page: AboutUsPage,
+  },
+  {
+    isShowHeader: true,
+    path: "/chinh-sach-bao-mat",
+    page: PrivacyPolicyCineZone,
+  },
+  {
+    isShowHeader: true,
+    path: "/dieu-khoan-su-dung",
+    page: TermsOfServiceCineZone,
+  },
+  {
+    isShowHeader: true,
+    path: "/huong-dan-thanh-toan",
+    page: PaymentGuideCineZone,
   },
   {
     isShowHeader: true,

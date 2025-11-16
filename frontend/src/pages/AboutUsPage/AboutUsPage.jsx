@@ -6,6 +6,7 @@ import {
   SafetyOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 export default function AboutUsPage() {
   const stats = [
@@ -14,7 +15,7 @@ export default function AboutUsPage() {
     { label: "Khách hàng", value: "2.5M+", prefix: "👥", color: "#ffb400" },
     { label: "Năm hoạt động", value: 5, prefix: "📅", color: "#00bfff" },
   ];
-
+  const navigate = useNavigate();
   const milestones = [
     {
       year: "",
@@ -367,6 +368,7 @@ export default function AboutUsPage() {
               (e.currentTarget.style.transform = "scale(1.05)")
             }
             onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onClick={() => navigate("/phim-dang-cong-chieu")}
           >
             Đặt vé ngay
           </Button>

@@ -8,7 +8,7 @@ import heroImg from "../../assets/hero-img.webp";
 import heroImgs from "../../assets/golden-ticket.png";
 
 const HeroSection = () => {
-  // const navigate = useNavigate()
+  const navigate = useNavigate();
   // const { isAuthenticated, signedPerson } = useSelector(
   //   (store) => store.authentication
   // )
@@ -32,16 +32,22 @@ const HeroSection = () => {
           <div className="hero-btn-container">
             <button
               onClick={() => {
-                // dispatch(resetCart())
-                // isAuthenticated && signedPerson.person_type === 'Customer'
-                //   ? navigate('/purchase')
-                //   : dispatch(showLoginModal())
+                navigate("/phim-dang-cong-chieu");
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="btn btn-full"
             >
               Mua vé ngay
             </button>
-            <div to="#nowShowing" className="btn btn-outline">
+
+            <div
+              to="#nowShowing"
+              className="btn btn-outline"
+              onClick={() => {
+                navigate("/aboutus");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            >
               Xem thêm &darr;
             </div>
           </div>

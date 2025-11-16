@@ -130,6 +130,7 @@ const CollectionCard = ({
 
       <button
         className="book-btn btn"
+        style={{ fontSize: "14px" }}
         onClick={(e) => {
           e.stopPropagation();
           // dispatch(resetCart());

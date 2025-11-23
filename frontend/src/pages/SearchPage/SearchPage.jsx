@@ -21,6 +21,11 @@ const SearchPage = () => {
     }
   }, [dispatch, query]);
 
+  const gridClass =
+    movieList.length === 1
+      ? "movie-grid-search single-item" // Áp dụng fix khi chỉ có 1 phim
+      : "movie-grid-search";
+
   return (
     <section className="section-search">
       <h2 className="search-heading">
@@ -30,7 +35,7 @@ const SearchPage = () => {
       {loading ? (
         <Spin style={{ display: "block", margin: "2rem auto" }} size="large" />
       ) : movieList.length > 0 ? (
-        <div className="movie-grid">
+        <div className={gridClass}>
           {movieList.map((movie) => (
             <CollectionCard key={movie.id} {...movie} />
           ))}

@@ -18,6 +18,7 @@
   color: #000;
   font-weight: bold;
   padding: 0 20px;
+  cursor: pointer;
 }
 .slide-background {
   width: 100%;

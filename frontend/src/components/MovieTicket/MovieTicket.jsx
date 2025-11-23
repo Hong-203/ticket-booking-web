@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { createBooking } from "../../stores/Seat/seatApis";
 import { createTicket } from "../../stores/Ticket/ticketApis";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 
@@ -137,6 +138,10 @@ const MovieTicket = ({
         const ticketId = ticketData.data.id;
         await navigate(`/payment/${ticketId}`);
       }
+    } else if (bookingData.unsuccess) {
+      toast.error(
+        "Ghế đã được đặt hoặc đang được chọn! Vui lòng chọn ghế khác !"
+      );
     }
   };
 
@@ -153,10 +158,10 @@ const MovieTicket = ({
             <Title level={3} className="movie-title">
               {ticketData.movie.name}
             </Title>
-            <div className="rating-section">
+            {/* <div className="rating-section">
               <Rate disabled defaultValue={5} />
               <Text strong>{ticketData.movie.rating}/10</Text>
-            </div>
+            </div> */}
             <Tag className="show-type-tag">{ticketData.showtime.show_type}</Tag>
           </div>
         </div>

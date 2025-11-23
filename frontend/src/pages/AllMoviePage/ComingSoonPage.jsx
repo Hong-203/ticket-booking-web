@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Spin, Empty, Pagination } from 'antd'
-import { getAllMovie } from '../../stores/Movie/movieApis'
-import CollectionCard from '../../components/CollectionCard'
-import './MoviePage.css'
-import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Spin, Empty, Pagination } from "antd";
+import { getAllMovieCS } from "../../stores/Movie/movieApis";
+import CollectionCard from "../../components/CollectionCard";
+import "./MoviePage.css";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const ComingSoonPage = () => {
-  const dispatch = useDispatch()
-  const movieList = useSelector((state) => state.movie.movieList || [])
-  const [page, setPage] = useState(1)
-  const [movieData, setMovieData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const movieListCS = useSelector((state) => state.movie.movieListCS || []);
+  const [page, setPage] = useState(1);
+  const [movieData, setMovieData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
-    dispatch(getAllMovie({ status: 'coming_soon', page: page, limit: 12 }))
-  }, [dispatch, page])
+    dispatch(getAllMovieCS({ status: "coming_soon", page: page, limit: 12 }));
+  }, [dispatch, page]);
 
   useEffect(() => {
-    if (Array.isArray(movieList)) {
-      setMovieData(movieList)
-      setLoading(false)
+    if (Array.isArray(movieListCS)) {
+      setMovieData(movieListCS);
+      setLoading(false);
     }
-  }, [movieList])
+  }, [movieListCS]);
   const handleNow = () => {
-    navigate('/phim-dang-cong-chieu')
-  }
+    navigate("/phim-dang-cong-chieu");
+  };
   return (
     <div className="all-movie-page">
       <div className="movie-header-container">
@@ -35,7 +35,7 @@ const ComingSoonPage = () => {
           className="movie-section-title upcoming"
           onClick={() => handleNow()}
         >
-          📅 Phim đang chiếu{' '}
+          📅 Phim đang chiếu{" "}
           <DoubleRightOutlined className="arrow-icon-all-movie" />
         </h2>
       </div>
@@ -58,15 +58,15 @@ const ComingSoonPage = () => {
               total={12}
               pageSize={12}
               onChange={(newPage) => {
-                setPage(newPage)
-                setLoading(true)
+                setPage(newPage);
+                setLoading(true);
                 dispatch(
-                  getAllMovie({
-                    status: 'coming_soon',
+                  getAllMovieCS({
+                    status: "coming_soon",
                     page: newPage,
-                    limit: 12
+                    limit: 12,
                   })
-                )
+                );
               }}
               showSizeChanger={false}
             />
@@ -76,7 +76,7 @@ const ComingSoonPage = () => {
         <Empty description="Không tìm thấy phim sắp chiếu" />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ComingSoonPage
+export default ComingSoonPage;

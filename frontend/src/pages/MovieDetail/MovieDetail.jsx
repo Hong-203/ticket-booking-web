@@ -6,6 +6,7 @@ import { Tag, Typography, Spin, Row, Col, Button } from "antd"; // Removed Descr
 import "./MovieDetail.css";
 import bgDetail from "../../assets/image.png";
 import { toast } from "react-toastify";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -72,7 +73,7 @@ const MovieDetail = () => {
               <Paragraph className="movie-detail__meta">
                 <Text className="text-detail-movie-ss">{duration}</Text> |{" "}
                 <Text className="text-detail-movie-ss">{language}</Text> |{" "}
-                <Text className="text-detail-movie-ss">DBMI: {rating}</Text>
+                {/* <Text className="text-detail-movie-ss">DBMI: {rating}</Text> */}
               </Paragraph>
               <div className="movie-detail__tags">
                 {genres?.map((g, i) => (
@@ -133,9 +134,9 @@ const MovieDetail = () => {
             <div className="movie-detail__section">
               <Text strong>Thời gian chiếu:</Text> {duration}
             </div>
-            <div className="movie-detail__section">
+            {/* <div className="movie-detail__section">
               <Text strong>DBMI:</Text> {rating}
-            </div>
+            </div> */}
 
             {trailer_url && (
               <>

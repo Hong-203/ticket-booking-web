@@ -40,6 +40,7 @@ const createBooking = (data) => async (dispatch) => {
     const res = await axios.post("/seats/seat-booking", data, config);
     if (res.data.message) {
       dispatch(getFailed(res.data.message));
+      return { unsuccess: true, message: res.data.message };
     } else {
       dispatch(createSuccess(res.data));
       return { success: true, data: res.data };

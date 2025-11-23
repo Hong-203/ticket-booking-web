@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function AboutUsPage() {
   const stats = [
-    { label: "Rạp chiếu phim", value: 5, prefix: "🏢", color: "#ff6f61" },
+    { label: "Rạp chiếu phim", value: 3, prefix: "🏢", color: "#ff6f61" },
     { label: "Thành phố", value: 2, prefix: "🌆", color: "#6a5acd" },
-    { label: "Khách hàng", value: "2.5M+", prefix: "👥", color: "#ffb400" },
+    { label: "Khách hàng", value: "15+", prefix: "👥", color: "#ffb400" },
     { label: "Năm hoạt động", value: 5, prefix: "📅", color: "#00bfff" },
   ];
   const navigate = useNavigate();

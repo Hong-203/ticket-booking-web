@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsUUID, IsArray, ArrayNotEmpty, IsString } from 'class-validator';
 
 export class CreateSeatBookingDto {
   @IsArray()
@@ -8,7 +8,7 @@ export class CreateSeatBookingDto {
   @ApiProperty({ type: [String] })
   seat_ids: string[];
 
-  @IsUUID()
+  @IsString()
   @ApiProperty()
   movie_id: string;
 

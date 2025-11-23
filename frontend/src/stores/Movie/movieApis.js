@@ -8,6 +8,7 @@ import {
   getFailed,
   getRequest,
   getMovieSuccess,
+  getMovieSuccessCS,
   postDone,
   updateSuccess,
 } from "./movieSlice";
@@ -29,6 +30,28 @@ const getAllMovie =
         dispatch(getFailed(res.data.message));
       } else {
         dispatch(getMovieSuccess(res.data));
+      }
+    } catch (error) {
+      dispatch(getError(error.message));
+    }
+  };
+
+const getAllMovieCS =
+  ({ status = "", page = 1, limit = 10, search = "" } = {}) =>
+  async (dispatch) => {
+    dispatch(getRequest());
+    try {
+      const config = getAuthConfig();
+      const query = `?page=${page}&limit=${limit}${
+        status ? `&status=${status}` : ""
+      }${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+
+      const res = await axios.get(`/movies${query}`, config);
+
+      if (res.data.message) {
+        dispatch(getFailed(res.data.message));
+      } else {
+        dispatch(getMovieSuccessCS(res.data));
       }
     } catch (error) {
       dispatch(getError(error.message));
@@ -124,4 +147,5 @@ export {
   deleteMovie,
   createMovie,
   getMovieBySlug,
+  getAllMovieCS,
 };

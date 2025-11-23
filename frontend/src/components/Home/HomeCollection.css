@@ -98,7 +98,7 @@
 .home-collection-inner {
   display: grid;
   padding-left: 1rem;
-  grid-template-columns: repeat(6, 16rem);
+  grid-template-columns: repeat(6, 14rem);
   gap: 1rem;
   animation: 30s home-slide linear infinite;
 }

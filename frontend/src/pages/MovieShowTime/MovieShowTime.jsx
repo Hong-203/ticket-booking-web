@@ -36,6 +36,8 @@ const MovieShowtime = () => {
   const listTheatreByLocation = useSelector(
     (state) => state.theatre.theatreByLocation || []
   );
+  console.log("listTheatreByLocation", listTheatreByLocation);
+
   const [theatres, setTheatres] = useState([]);
   const selectedLocation = useSelector(
     (state) => state.selection.selectedLocation
@@ -45,7 +47,7 @@ const MovieShowtime = () => {
   const [filterDate, setFilterDate] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  console.log("theatres", theatres);
   useEffect(() => {
     const query = slug ? `slug_name=${slug}` : "";
     dispatch(getAllShownIn(query));
@@ -207,12 +209,12 @@ const MovieShowtime = () => {
             <div className="movie-details">
               <Title level={1}>{movie.name}</Title>
               <div className="movie-meta">
-                <div className="meta-item">
+                {/* <div className="meta-item">
                   <span className="rating-badge">
                     <StarFilled />
                     {movie.rating}
                   </span>
-                </div>
+                </div> */}
                 <div className="meta-item">
                   <ClockCircleOutlined />
                   <span>{movie.duration}</span>

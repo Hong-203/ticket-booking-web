@@ -34,12 +34,18 @@
 }
 
 /* LƯỚI PHIM: Sử dụng lại cấu trúc grid đã được responsive */
-/* (Giả định .movie-grid là grid-layout từ MoviePage.css hoặc được định nghĩa tương tự) */
-.movie-grid {
+
+.movie-grid-search {
   display: grid;
-  /* Mặc định 4-5 cột trên desktop */
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
+}
+
+/* TRƯỜNG HỢP ĐẶC BIỆT: CHỈ CÓ 1 KẾT QUẢ TÌM KIẾM */
+.movie-grid-search.single-item {
+  width: 230px;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 /* ======================================= */

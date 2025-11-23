@@ -16,7 +16,7 @@
 .movie-grid {
   display: grid;
   /* Dùng auto-fit và minmax để tự động điều chỉnh số cột */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 

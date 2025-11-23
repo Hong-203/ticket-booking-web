@@ -3,7 +3,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class GetShownInQueryDto {
   @IsOptional()
-  @IsUUID()
+  @IsString()
   @ApiPropertyOptional()
   movie_id?: string;
 

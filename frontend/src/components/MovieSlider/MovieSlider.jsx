@@ -4,24 +4,24 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "./MovieSlider.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getAllMovie } from "../../stores/Movie/movieApis";
+import { getAllMovieCS } from "../../stores/Movie/movieApis";
 
 const MovieSlider = () => {
-  const movieList = useSelector((state) => state.movie.movieList || []);
+  const movieListCS = useSelector((state) => state.movie.movieListCS || []);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    dispatch(getAllMovie({ status: "now_showing", page: 1, limit: 6 }));
+    dispatch(getAllMovieCS({ status: "coming_soon", page: 1, limit: 6 }));
   }, [dispatch, 1]);
   useEffect(() => {
-    if (Array.isArray(movieList)) {
-      setMovies(movieList);
+    if (Array.isArray(movieListCS)) {
+      setMovies(movieListCS);
       setLoading(false);
     }
-  }, [movieList]);
+  }, [movieListCS]);
   const CustomArrow = ({ direction, onClick }) => (
     <div className={`custom-arrow ${direction}`} onClick={onClick}>
       {direction === "prev" ? <LeftOutlined /> : <RightOutlined />}
@@ -61,7 +61,7 @@ const MovieSlider = () => {
         nextArrow={<CustomArrow direction="next" />}
         dotPosition="bottom"
       >
-        {movieList.map((movie) => (
+        {movieListCS.map((movie) => (
           <div key={movie.id} className="slide-item">
             <div
               className="slide-background"

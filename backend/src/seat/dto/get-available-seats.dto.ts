@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
 
 export class GetAvailableSeatsDto {
-  @IsUUID('4') // Explicitly validate UUID version 4
+  @IsString() // Explicitly validate UUID version 4
   @ApiProperty({ description: 'Movie ID in UUID format' })
   movie_id: string;
 
